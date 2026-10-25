@@ -25,7 +25,7 @@
 
 ## T01 — Scaffold del repositorio
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T00
 - **RF**: —
@@ -47,10 +47,11 @@
   - No se versiona `.env`.
 - **Tests**: `npm run lint`, `npm run typecheck`, `npm run build`,
   `npx playwright test --list`, `npm run test:unit`.
+- **Evidencia**: `specs/001-muro-24h/evidence/T01-scaffold.md`.
 
 ## T02 — Backend base, Docker y migraciones
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T01
 - **RF**: —
@@ -72,6 +73,7 @@
 - **Tests**: `docker compose up -d --build`,
   `docker compose --profile test up -d`, healthcheck, migraciones en bases
   limpias.
+- **Evidencia**: `specs/001-muro-24h/evidence/T02-backend-docker.md`.
 
 ## T03 — Auth y sesiones
 

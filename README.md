@@ -5,9 +5,9 @@ comentarios y el más comentado se convierte en el héroe del muro.
 
 > Repositorio: <https://github.com/franmaurizpereira/wall24h>
 >
-> Estado: **fase 0 completada** (base de datos). La aplicación todavía no está
-> scaffolded; los comandos `npm` y `docker compose` de este README son el
-> objetivo de la fase 1.
+> Estado: **fase 0 completada** y **fase 1 (T01/T02) completada**.
+> La app base, Docker, migraciones y tests de salud están listos. El siguiente
+> paso es auth y sesiones (T03); el frontend llega en la fase 4.
 
 ## Qué es
 
@@ -27,11 +27,16 @@ comentarios y el más comentado se convierte en el héroe del muro.
 | Fase | Estado |
 |---|---|
 | 0 | ✅ Esquema PostgreSQL, constraints, triggers, purga y tests |
-| 1 | ⏳ Scaffold, Docker, migraciones, lint, typecheck y base Playwright/Vitest |
+| 1 | ✅ Scaffold, Docker, migraciones, lint, typecheck, Playwright/Vitest y salud |
 | 2–9 | ⏳ Auth, API, frontend, polling, moderación, tests y despliegue |
 
 Existe hoy:
 
+- `package.json`, `package-lock.json`, TS/ESLint/Prettier y scripts.
+- `src/` con Fastify, `/healthz`, pool de PostgreSQL y manejo de errores.
+- `Dockerfile`, `docker-compose.yml`, `db/Dockerfile`, `db/init/` y `Caddyfile`.
+- `docker compose` con `db`, `migrate`, `migrate-test`, `app`, `app-test` y `caddy`.
+- `playwright.config.ts`, `vitest.config.ts` y tests de salud/API/DB.
 - `db/migrations/001_schema.sql` y `db/migrations/002_cron.sql`.
 - `db/tests/schema_test.sql` y scripts de validación real.
 - `AGENTS.md`, los agentes SDD y `specs/001-muro-24h/`.
@@ -39,10 +44,9 @@ Existe hoy:
 
 Todavía no existe:
 
-- `package.json` raíz, app Fastify, frontend React, `docker-compose.yml` raíz,
-  `playwright.config.ts` ni la suite de tests de aplicación.
-- Los comandos `npm` y `docker compose` de las secciones siguientes están
-  planificados para la fase 1; no funcionan todavía.
+- Frontend React, API de negocio (auth/muro/comentarios/reportes) y tests E2E/visual.
+- El `test:e2e` y `test:visual` están configurados, pero aún no tienen specs.
+- La SPA no se sirve todavía; `/healthz` y `/api/*` son lo disponible.
 
 ## Stack objetivo
 
@@ -55,7 +59,18 @@ Todavía no existe:
 - **Testing**: Playwright para API, DB, E2E y visual; Vitest solo para funciones
   puras.
 
-## Docker (objetivo de la fase 1)
+## Arranque rápido
+
+```sh
+cp .env.example .env
+# Edita DB_PASSWORD, COOKIE_SECRET y TEST_COOKIE_SECRET.
+docker compose up -d --build
+curl http://localhost:8080/healthz
+```
+
+La app base solo expone `/healthz` y prepara `/api/*`; la SPA se integra en T09.
+
+## Docker
 
 | Servicio | Puerto host | Base |
 |---|---|---|
@@ -72,10 +87,9 @@ Todavía no existe:
   `purge_expired_messages()`.
 
 ```sh
-# Cuando exista el compose (fase 1)
 docker compose up -d --build          # db + migrate + app + caddy
-docker compose --profile test up -d   # db + migrate-test + app-test
-docker compose --profile test down
+npm run test:up                       # db + migrate-test + app-test
+npm run test:down
 ```
 
 ## Base de datos
@@ -113,15 +127,13 @@ Requiere `podman` o `docker` y el cliente `psql`:
 
 ## Testing
 
-Plan para la fase 1:
+Tests disponibles:
 
 ```sh
-npm test              # Playwright: api + db + e2e + visual
-npm run test:api
-npm run test:db
-npm run test:e2e
-npm run test:visual
-npm run test:unit     # Vitest: funciones puras
+npm test              # Playwright: setup + api + db (+ e2e/visual cuando existan)
+npm run test:api      # /healthz
+npm run test:db       # esquema en wall_test
+npm run test:unit     # Vitest: funciones puras (sin tests todavía)
 npm run test:all      # test:up + unit + Playwright + test:down
 npm run test:up
 npm run test:down
@@ -129,6 +141,8 @@ npm run test:down
 
 - Playwright corre en el host contra `app-test` (`http://localhost:8081`) y
   `wall_test` (`localhost:5433`).
+- `test:e2e` y `test:visual` están configurados, pero sus specs llegan en las
+  fases 5 y 6.
 - Los tests SQL de esquema y `pg_cron` siguen en `psql`, no en Playwright.
 - Evidencia: HTML report, traces y screenshots en `specs/<feature>/evidence/`.
 
@@ -149,25 +163,57 @@ Copia `.env.example` a `.env` y rellena los valores:
 wall24h/
 ├── AGENTS.md
 ├── MEMORY.md
+├── README.md
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+├── playwright.config.ts
+├── vitest.config.ts
+├── eslint.config.js
+├── .prettierrc
+├── .env.example
+├── .gitignore
+├── opencode.json
+├── Dockerfile
+├── docker-compose.yml
+├── Caddyfile
 ├── .opencode/
 │   ├── agents/
 │   └── design-brief.md
 ├── specs/001-muro-24h/
 ├── db/
+│   ├── Dockerfile
+│   ├── init/
 │   ├── migrations/
 │   ├── tests/
 │   └── README.md
-├── docs/                    # referencia histórica y diagramas
+├── src/
+│   ├── server.js
+│   ├── app.js
+│   ├── db.js
+│   ├── routes/
+│   └── lib/
+├── tests/
+│   ├── setup/
+│   ├── api/
+│   ├── db/
+│   ├── e2e/
+│   ├── visual/
+│   └── unit/
 ├── scripts/
 │   ├── validate-schema.sh
-│   └── validate-cron.sh
-├── .env.example
-├── .gitignore
-└── opencode.json
+│   ├── validate-cron.sh
+│   ├── migrate.sh
+│   ├── migrate-test.sh
+│   ├── test-up.sh
+│   ├── test-down.sh
+│   ├── test-all.sh
+│   └── with-env.mjs
+└── docs/
 ```
 
-La fase 1 añadirá `src/`, `web/`, `tests/`, `docker-compose.yml`, `Dockerfile`,
-`Caddyfile`, `playwright.config.ts`, `vitest.config.ts` y `package.json`.
+La fase 2 añadirá auth, sesiones y rutas de negocio. La fase 4 añadirá `web/` y
+la SPA; la etapa de build de Vite se integrará en el Dockerfile entonces.
 
 ## Flujo SDD
 
@@ -196,7 +242,7 @@ evidence/
 | Fase | Objetivo |
 |---|---|
 | 0 | Esquema PostgreSQL, constraints, triggers y purga (completada) |
-| 1 | Scaffold, Docker, migraciones, lint, typecheck y base Playwright/Vitest |
+| 1 | Scaffold, Docker, migraciones, lint, typecheck, Playwright/Vitest y salud (completada) |
 | 2 | Auth, sesiones en BD, cookies y rate limit |
 | 3 | API de muro, mensajes, comentarios y reportes |
 | 4 | Frontend: shell, muro, héroe y countdown |

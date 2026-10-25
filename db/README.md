@@ -10,7 +10,7 @@ comentarios, reportes, sesiones y purga automática.
 | `migrations/001_schema.sql` | Extensiones, tablas, constraints, triggers, índices y funciones de purga |
 | `migrations/002_cron.sql` | Jobs de `pg_cron` para purgar mensajes y sesiones |
 | `tests/schema_test.sql` | Pruebas de reglas, constraints, triggers, inmutabilidad y purga |
-| `tests/pg_cron.Containerfile` | Imagen de PostgreSQL 16 con `pg_cron` para la validación |
+| `Dockerfile` | Imagen de PostgreSQL 16 con `pg_cron` |
 | `../scripts/validate-schema.sh` | Validación reproducible del esquema base |
 | `../scripts/validate-cron.sh` | Validación reproducible de `pg_cron` (tarda hasta 75 s) |
 

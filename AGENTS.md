@@ -36,13 +36,14 @@ Reglas de lectura:
 ### Estado actual del repositorio
 
 - **Fase 0 completada**: `db/migrations/001_schema.sql`, `db/migrations/002_cron.sql`, `db/tests/schema_test.sql` y scripts de validación.
-- **No existe todavía**: `package.json` raíz, `docker-compose.yml` raíz, scaffold de la app, frontend, git, tests de aplicación.
+- **Fase 1 completada (T01/T02)**: `package.json`, TS/ESLint/Prettier, `src/` con Fastify y `/healthz`, `Dockerfile`, `docker-compose.yml`, `db/Dockerfile`, `db/init/`, `Caddyfile`, `playwright.config.ts`, `vitest.config.ts` y tests de salud/API/DB.
+- **No existe todavía**: frontend React, API de negocio (auth/muro/comentarios/reportes) y specs E2E/visual.
 - **Entorno decidido**: PostgreSQL y app en Docker; el PostgreSQL local del 5432 no se usa. La base de Docker se publica en 5433, la app en 8080 y la app de test en 8081.
 - `docs/` es referencia histórica:
   - `docs/init.sql` y `docs/codigo_base_de_datos_postgres.sql` están obsoletos; **no los uses**.
   - `docs/server.js` es un borrador, no la implementación de producción.
   - `docs/docker-compose.yml` usa una imagen (`cybertecpostgresql/postgresql:16-3`) que no está disponible públicamente.
-- La siguiente fase es la **fase 1: scaffold, Docker y runner de migraciones**.
+- La siguiente fase es la **fase 2: auth y sesiones**.
 - El paquete SDD inicial vive en `specs/001-muro-24h/`.
 
 ### Roadmap de referencia
@@ -50,7 +51,7 @@ Reglas de lectura:
 | Fase | Objetivo |
 |---|---|
 | 0 | Esquema PostgreSQL, constraints, triggers y purga (completada) |
-| 1 | Scaffold, Docker, migraciones, lint, typecheck y base Playwright/Vitest |
+| 1 | Scaffold, Docker, migraciones, lint, typecheck y base Playwright/Vitest (completada; T01/T02) |
 | 2 | Auth, sesiones en BD, cookies y rate limit |
 | 3 | API de muro, mensajes, comentarios y reportes |
 | 4 | Frontend: shell, muro, héroe, countdown y estados |
@@ -280,7 +281,7 @@ Reglas de API:
 - No declares un test como pasado sin haberlo ejecutado.
 - Evidencia: HTML report, trace, screenshot o vídeo en fallo.
 
-### Comandos disponibles hoy
+### Comandos
 
 ```sh
 ./scripts/validate-schema.sh   # esquema + reglas + triggers + purga
@@ -289,44 +290,38 @@ Reglas de API:
 
 Requieren `podman` o `docker` y el cliente `psql`.
 
-### Comandos planificados (fase 1+)
-
-Marcados como objetivo; **no existen todavía**:
-
 ```sh
 docker compose up -d --build          # db + migrate + app + caddy
-docker compose --profile test up -d   # db + migrate-test + app-test
-docker compose --profile test down
-
 npm install
 npm run build
 npm run dev           # opcional: app en host con la DB en Docker
-npm test              # Playwright: api + db + e2e + visual
+npm test              # Playwright: setup + api + db (+ e2e/visual cuando existan)
 npm run test:up       # levanta db + migrate-test + app-test
 npm run test:down
 npm run test:api
 npm run test:db
-npm run test:e2e
-npm run test:visual
+npm run test:e2e      # configurado; specs pendientes
+npm run test:visual   # configurado; specs pendientes
 npm run test:unit     # Vitest: funciones puras
 npm run test:all      # test:up + unit + Playwright + test:down
 npm run lint
 npm run typecheck
 npm run db:migrate
+npm run db:migrate:test
 ```
 
 Configuración Playwright: `playwright.config.ts` con proyectos `setup`, `api`,
 `db`, `e2e` y `visual`; `baseURL` = `TEST_BASE_URL`
 (`http://localhost:8081`); `TEST_DATABASE_URL` = `localhost:5433/wall_test`;
-`migrate-test` aplica el esquema; `globalSetup` limpia y siembra `wall_test`;
-`setup` espera `/healthz` de `app-test`; sin `webServer` si el stack de test ya
-está levantado; traces, screenshots y vídeo solo en fallo; `workers: 1` para
-`db`.
+`migrate-test` aplica el esquema; `setup` valida el esquema y espera `/healthz`
+de `app-test`; los seeds se añadirán con los tests de negocio; sin `webServer`
+si el stack de test ya está levantado; traces, screenshots y vídeo solo en
+fallo; `workers: 1` para `db`.
 
-El script `test:all` debe levantar el perfil `test` (`test:up`), ejecutar Vitest
-y Playwright, y bajar el stack (`test:down`).
+El script `test:all` levanta el perfil `test` (`test:up`), ejecuta Vitest y
+Playwright, y baja el stack (`test:down`).
 
-Si un comando planificado no existe, el coordinator lo añade en la fase 1; no lo inventes ni lo uses como si funcionara.
+Si un comando no existe, no lo inventes ni lo uses como si funcionara.
 
 ### Entorno
 

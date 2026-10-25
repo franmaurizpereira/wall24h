@@ -41,8 +41,8 @@ trap cleanup EXIT
 echo "→ Construyendo imagen con pg_cron..."
 "$ENGINE" build \
   -t "$IMAGE" \
-  -f "$ROOT_DIR/db/tests/pg_cron.Containerfile" \
-  "$ROOT_DIR/db/tests" >/dev/null
+  -f "$ROOT_DIR/db/Dockerfile" \
+  "$ROOT_DIR/db" >/dev/null
 
 echo "→ Levantando PostgreSQL con pg_cron precargado..."
 "$ENGINE" run -d --rm \

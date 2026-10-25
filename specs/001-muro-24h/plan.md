@@ -257,7 +257,7 @@ App
 | Fase | Entregable | Estado |
 |---|---|---|
 | 0 | Esquema PostgreSQL, constraints, triggers y purga | Completada |
-| 1 | Scaffold, package.json, TS, lint, Docker (db/app/app-test), migraciones, healthcheck y base Playwright/Vitest | Pendiente |
+| 1 | Scaffold, package.json, TS, lint, Docker (db/app/app-test), migraciones, healthcheck y base Playwright/Vitest | Completada (T01/T02) |
 | 2 | Auth, sesiones en BD, cookies, rate limit | Pendiente |
 | 3 | API de muro, mensajes, comentarios y reportes | Pendiente |
 | 4 | Frontend shell, muro, héroe y countdown | Pendiente |
@@ -278,7 +278,7 @@ Runner principal: **Playwright Test**. Vitest solo para funciones puras.
 
 | Proyecto | Base | Qué valida |
 |---|---|---|
-| `setup` | Node + `pg` | Espera `migrate-test`; limpia y siembra `wall_test` |
+| `setup` | Node + `pg` | Espera `migrate-test`; valida el esquema y `/healthz`; seeds en tests de negocio |
 | `api` | `request` | `app-test` (8081): auth, muro, mensajes, comentarios, reportes y 401/403/409/410/422 |
 | `db` | `pg` | `wall_test` (5433): constraints, triggers, expiración, purga y concurrencia |
 | `e2e` | Navegador | `app-test`: dos usuarios, publicar, comentar, ranking, sesión y expiración |

@@ -1,0 +1,9 @@
+# Local (sin dominio):
+:80 {
+    reverse_proxy app:3000
+}
+
+# Producción (sustituir lo de arriba):
+# wall24h.tudominio.com {
+#     reverse_proxy app:3000
+# }

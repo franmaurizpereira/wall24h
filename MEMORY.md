@@ -6,10 +6,11 @@
 ## Estado actual (2026-10-25)
 
 - Fase 0 completada: esquema PostgreSQL, constraints, triggers, purga y tests en `db/`.
+- Fase 1 completada (T01/T02): `package.json`, Fastify base con `/healthz`, Docker Compose (`db`, `app`, `app-test`), migraciones y tests Playwright/Vitest.
 - Andamiaje SDD creado: `AGENTS.md`, `.opencode/agents/` y `specs/001-muro-24h/`.
-- No hay app todavía: sin `package.json` raíz, sin scaffold, sin frontend, sin git.
+- No hay frontend ni API de negocio todavía.
 - Brief visual en `.opencode/design-brief.md`; es un documento, no un agente. Pendiente de aprobación.
-- Siguiente paso: revisar la spec 001 con `reviewer` y empezar T01/T02 (scaffold + compose Docker).
+- Siguiente paso: T03 auth y sesiones.
 
 ## Decisiones importantes
 
