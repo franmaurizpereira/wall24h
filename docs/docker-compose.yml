@@ -1,0 +1,54 @@
+services:
+  db:
+    # Image con extensiones incluidas (pg_cron, pgcrypto) sin compilar nada
+    image: cybertecpostgresql/postgresql:16-3
+    container_name: wall_db
+    environment:
+      POSTGRES_DB: wall
+      POSTGRES_USER: wall
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+    command:
+      - postgres
+      - -c
+      - shared_preload_libraries=pg_cron   # OBLIGATORIO para pg_cron
+      - -c
+      - timezone=UTC
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/00-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wall -d wall"]
+      interval: 5s
+      retries: 10
+      start_period: 15s
+    # ports: ["5432:5432"]   # descomentar solo para depurar la BD
+
+  app:
+    build: .
+    container_name: wall_app
+    environment:
+      DATABASE_URL: postgres://wall:${DB_PASSWORD}@db:5432/wall
+      COOKIE_SECRET: ${COOKIE_SECRET:?set COOKIE_SECRET in .env}
+      PORT: 3000
+    depends_on:
+      db:
+        condition: service_healthy   # la app arranca solo con la BD lista
+    ports:
+      - "8080:3000"
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2
+    container_name: wall_caddy
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on: [app]
+    restart: unless-stopped
+
+volumes:
+  dbdata:
+  caddy_data:

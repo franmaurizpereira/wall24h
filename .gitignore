@@ -1,0 +1,20 @@
+# Dependencias
+node_modules/
+
+# Build y cobertura
+dist/
+web/dist/
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# Entorno
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# Logs y sistema
+*.log
+.DS_Store
