@@ -97,7 +97,7 @@
 
 ## T04 — Lectura del muro y detalle
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T02
 - **RF**: RF-01, RF-03, RF-07
@@ -110,6 +110,7 @@
   - Sin emails ni hashes en la respuesta.
 - **Tests**: Playwright API: orden, héroe, sin comentarios, empate, 410,
   lectura anónima.
+- **Evidencia**: `specs/001-muro-24h/evidence/T04-wall-read.md`.
 
 ## T05 — Publicar mensaje
 
