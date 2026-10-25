@@ -259,7 +259,7 @@ App
 | 0 | Esquema PostgreSQL, constraints, triggers y purga | Completada |
 | 1 | Scaffold, package.json, TS, lint, Docker (db/app/app-test), migraciones, healthcheck y base Playwright/Vitest | Completada (T01/T02) |
 | 2 | Auth, sesiones en BD, cookies, rate limit | Completada (T03) |
-| 3 | API de muro, mensajes, comentarios y reportes | En progreso (T04-T07; T08 pendiente) |
+| 3 | API de muro, mensajes, comentarios, reportes y purga | Completada (T04-T08) |
 | 4 | Frontend shell, muro, héroe y countdown | Pendiente |
 | 5 | Detalle, comentarios, auth y reportes | Pendiente |
 | 6 | Polling, errores y pulido | Pendiente |

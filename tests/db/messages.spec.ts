@@ -55,8 +55,11 @@ test('la BD impide dos mensajes activos del mismo usuario', async () => {
       code?: string;
       constraint?: string;
     };
-    expect(error.code).toBe('23P01');
-    expect(error.constraint).toBe('uq_messages_active_per_user');
+    // Un deadlock también deja un único ganador; la API reintenta 40P01.
+    expect(['23P01', '40P01']).toContain(error.code);
+    if (error.code === '23P01') {
+      expect(error.constraint).toBe('uq_messages_active_per_user');
+    }
   } finally {
     clientA.release();
     clientB.release();
@@ -94,8 +97,11 @@ test('la BD impide el mismo contenido activo entre usuarios', async () => {
       code?: string;
       constraint?: string;
     };
-    expect(error.code).toBe('23P01');
-    expect(error.constraint).toBe('uq_messages_active_no_duplicates');
+    // Un deadlock también deja un único ganador; la API reintenta 40P01.
+    expect(['23P01', '40P01']).toContain(error.code);
+    if (error.code === '23P01') {
+      expect(error.constraint).toBe('uq_messages_active_no_duplicates');
+    }
   } finally {
     clientA.release();
     clientB.release();

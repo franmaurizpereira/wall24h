@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { query } from '../db.js';
+import { queryWithRetry } from '../db.js';
 import { requireUser } from '../lib/auth.js';
 import { httpError, mapDbError } from '../lib/errors.js';
 import { moderate } from '../lib/moderation.js';
@@ -19,7 +19,7 @@ export default async function reportRoutes(app) {
     await moderate(reason);
 
     try {
-      const { rows } = await query(
+      const { rows } = await queryWithRetry(
         `INSERT INTO reports (message_id, reporter_id, reason)
          VALUES ($1, $2, $3)
          RETURNING status`,

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { query } from '../db.js';
+import { query, queryWithRetry } from '../db.js';
 import { requireUser } from '../lib/auth.js';
 import { httpError, mapDbError } from '../lib/errors.js';
 import { moderate } from '../lib/moderation.js';
@@ -21,7 +21,7 @@ export default async function messageRoutes(app) {
     await moderate(text);
 
     try {
-      const { rows } = await query(
+      const { rows } = await queryWithRetry(
         `INSERT INTO messages (user_id, content)
          VALUES ($1, $2)
          RETURNING id, created_at, expires_at`,
@@ -49,7 +49,7 @@ export default async function messageRoutes(app) {
     await moderate(text);
 
     try {
-      const { rows } = await query(
+      const { rows } = await queryWithRetry(
         `INSERT INTO comments (message_id, user_id, content)
          VALUES ($1, $2, $3)
          RETURNING id, created_at`,

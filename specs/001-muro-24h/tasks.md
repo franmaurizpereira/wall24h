@@ -166,12 +166,12 @@
 
 ## T08 — Purga y expiración
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T02, T04
 - **RF**: RF-03, RF-08
 - **Archivos**: `db/migrations/002_cron.sql`, `scripts/validate-cron.sh`,
-  `src/routes/wall.js`, `tests/db/expiry.spec.ts`
+  `src/routes/wall.js`, `src/db.js`, `tests/db/expiry.spec.ts`
 - **Criterios**:
   - Cron cada minuto borra vencidos y cascada.
   - Sesiones vencidas se purgan.
@@ -182,6 +182,7 @@
   - `validate-cron.sh` valida el job real en un contenedor aparte.
 - **Tests**: Playwright DB + SQL: mensaje vencido oculto, `410`, purga real y
   cascada.
+- **Evidencia**: `specs/001-muro-24h/evidence/T08-purge-expiry.md`.
 
 ## T09 — Shell del frontend, muro y héroe
 
