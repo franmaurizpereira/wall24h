@@ -260,6 +260,14 @@ evidence/
 - `db/README.md`: esquema, reglas y códigos de error.
 - `docs/`: estructura original, diagramas y borradores.
 
+## Herramientas de desarrollo
+
+- **Context7**: documentación actualizada de librerías vía MCP. Está configurado
+  en `opencode.json`; usa `resolve-library-id` y `query-docs` antes de
+  implementar o actualizar una dependencia.
+- **Playwright MCP**: verificación visual, capturas y comprobaciones de la UI.
+- **OpenCode SDD**: `AGENTS.md`, agentes y `specs/001-muro-24h/`.
+
 ## Seguridad
 
 - Contraseñas con Argon2id.

@@ -111,6 +111,7 @@ Para cada tarea de `tasks.md`, en orden:
    - RF y criterios de aceptación;
    - archivos permitidos;
    - proyecto Playwright (`api`, `db`, `e2e`, `visual` o `unit`) y comandos;
+   - documentación consultada en Context7 (librería/versión) o “ninguna”;
    - restricciones (no CSS, no spec, no dependencias no aprobadas).
 3. Invoca a `reviewer` con `review_mode: implementation`, la tarea, los
    archivos cambiados y la evidencia de tests.
@@ -174,6 +175,8 @@ Usa las plantillas de `AGENTS.md` sección 10. Si un subagente devuelve
   `graphic-designer` y `reviewer-estilo`.
 - No lances varios subagentes en paralelo cuando dependan entre sí.
 - No aceptes un PASS sin evidencia Playwright, SQL o equivalente.
+- Exige que la evidencia cite Context7 cuando la tarea use una librería.
+- No uses Context7 para reglas de negocio ni pegues secretos en las queries.
 - No declares terminado un trabajo con gates pendientes.
 - No ocultes fallos, bloqueos ni decisiones abiertas.
 - No leas `.env` ni imprimas secretos.

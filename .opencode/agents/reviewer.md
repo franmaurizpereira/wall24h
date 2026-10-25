@@ -85,6 +85,7 @@ Checklist:
 - `npm run test:unit` pasa para funciones puras; los scripts SQL pasan si se tocó la BD.
 - Los tests fallan antes y pasan después; no son triviales.
 - No se usa React Testing Library ni otro runner para API/DB/E2E.
+- La API usada coincide con la documentación de Context7 para la versión instalada.
 - Los códigos de error coinciden con `db/README.md` y `AGENTS.md`.
 - Se cubren expiración, duplicados, auto-comentario, auto-reporte, sesión
   vencida y mensajes inexistentes.
@@ -121,6 +122,8 @@ Comandos ejecutados:
 - npm run test:unit → <resultado>
 Artefactos:
 - <reporte Playwright, trace o screenshot>
+Docs consultadas:
+- <libraryId/versión o "ninguna">
 Correcciones requeridas:
 - ...
 ```

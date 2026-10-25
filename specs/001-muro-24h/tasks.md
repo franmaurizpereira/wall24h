@@ -89,6 +89,8 @@
   - Argon2id; token de 32 bytes; BD guarda sha256 hex.
   - Cookie `HttpOnly`, `SameSite=Lax`, `Secure` en producción.
   - Rate limit en registro/login.
+  - Consultar Context7 para Fastify 5, `@fastify/cookie`, `@node-rs/argon2`,
+    `pg` y `@fastify/rate-limit`; citar docs en la evidencia.
 - **Tests**: Playwright API: flujo completo, cookie, sesión vencida, logout,
   duplicados.
 

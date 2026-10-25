@@ -23,6 +23,7 @@
 - Polling 15 s; sesiones en BD; reportes en cola. Motivo: MVP simple, multi-instancia y moderación básica.
 - Testing: Playwright para API/DB/E2E/visual; Vitest solo unitarios puros; tests SQL en `psql`. Motivo: un runner para flujos reales y velocidad para funciones puras.
 - Docker: PostgreSQL + app en compose; DB 5433, app 8080, app-test 8081; el PostgreSQL local del 5432 queda fuera. Motivo: entorno reproducible y sin conflictos.
+- Context7: documentación de librerías; Playwright: verificación visual. Motivo: evitar APIs desactualizadas y validar la UI real.
 
 ## Errores a evitar
 
@@ -34,5 +35,6 @@
 - No leer `.env` ni imprimir secretos; usar `.env.example`.
 - No inventar comandos: los `npm` aún no existen.
 - No usar React Testing Library ni apuntar Playwright a producción; usar `TEST_DATABASE_URL`.
+- No usar Context7 para reglas de negocio ni pegar claves o datos sensibles en las queries.
 - No usar `localhost` dentro de contenedores; usar `db:5432`. No testear contra `wall`.
 - No confundir `web/css/style.css` con `css/style.css` en la raíz.

@@ -130,7 +130,9 @@ tarea** de un plan aprobado, con tests primero. No decides el alcance.
 1. Lee `AGENTS.md` completo.
 2. Lee `spec.md`, `plan.md`, `tasks.md` y la tarea asignada.
 3. Localiza la tarea exacta y confirma que está aprobada y en `in_progress`.
-4. Inspecciona el código y los tests existentes antes de escribir.
+4. Inspecciona el código y los tests existentes antes de escribir. Si la tarea
+   usa una librería, consulta Context7 (`resolve-library-id` → `query-docs`) y
+   anota la librería/versión en la evidencia.
 5. Si la tarea es ambigua, falta contexto o requiere archivos fuera de tu
    permiso, devuelve `BLOQUEADO` con el motivo. No improvises.
 
@@ -174,6 +176,7 @@ Si no puedes ejecutar un test, dilo explícitamente. No lo declares en verde.
 - Tests de API/DB con Playwright contra PostgreSQL real; unitarios puros con
   Vitest.
 - Evidencia Playwright: HTML report, trace, screenshot o vídeo en fallo.
+- Cita en la evidencia la documentación de Context7 consultada para las librerías.
 - Si el cambio toca UI, añade clases semánticas estables y documenta el mapa
   de clases para el diseñador. No escribas el CSS.
 

@@ -332,6 +332,15 @@ Si un comando no existe, no lo inventes ni lo uses como si funcionara.
 - `TEST_DATABASE_URL` es exclusiva de tests; nunca apuntes a producción.
 - MCP: `context7` para documentación de librerías; `playwright` para verificación visual. No pongas claves en el repositorio.
 
+### Documentación con Context7
+
+- Úsalo antes de implementar o actualizar una librería, plugin, SDK o CLI.
+- Flujo: `resolve-library-id` → `query-docs` con la librería y versión exactas.
+- Cita en el plan, handoff o evidencia la librería/versión y las decisiones tomadas.
+- No lo uses para reglas de negocio ni para sustituir la lectura del código local.
+- No incluyas claves, tokens ni datos sensibles en las queries.
+- El `reviewer` puede usarlo para verificar compatibilidad de APIs.
+
 ## 9. Seguridad y privacidad
 
 - Contraseñas con Argon2id.
@@ -428,6 +437,7 @@ Archivos permitidos: ...
 Criterios: ...
 Proyecto Playwright: api | db | e2e | visual | unit
 Comandos: ...
+Docs consultadas: ...
 Restricciones: no tocar web/css/style.css, no cambiar la spec, no añadir dependencias.
 Devuelve: resumen, archivos, tests ejecutados, evidencia y bloqueos.
 ```
@@ -439,6 +449,7 @@ Modo: spec | implementation
 Objetivo: ...
 RF a validar: ...
 Evidencia: ...
+Docs consultadas: ...
 Devuelve: PASS/FAIL por RF, severidad, hallazgos, comandos ejecutados.
 ```
 
@@ -492,6 +503,7 @@ Reglas de colaboración:
 - Cada RF tiene evidencia (Playwright test, comando, captura).
 - `npm run test:all` en verde contra `app-test` (8081) y `wall_test` (5433); scripts SQL si se tocó la BD.
 - Reporte HTML, traces o screenshots guardados cuando aplique.
+- Si la tarea usa una librería, la evidencia cita la documentación de Context7 consultada.
 - Manejo de errores y códigos correctos.
 - Sin scope creep ni archivos fuera de la tarea.
 - Sin secretos, sin contenido en logs, sin `any` injustificado.
@@ -541,6 +553,7 @@ Reglas de colaboración:
 - No uses Tailwind, CSS-in-JS, CSS Modules ni estilos inline.
 - No uses React Testing Library ni otro runner para API/DB/E2E; Playwright es el runner.
 - No ejecutes Playwright contra producción; usa `TEST_DATABASE_URL`.
+- No uses Context7 para reglas de negocio ni pegues claves o datos sensibles en las queries.
 - No uses el PostgreSQL local del 5432 para este proyecto.
 - No uses `localhost` dentro de un contenedor; usa `db:5432`.
 - No ejecutes tests contra `wall`; usa `wall_test`.
@@ -565,6 +578,7 @@ Decisiones cerradas:
 - Brief visual global en `.opencode/design-brief.md`; overrides por feature en `specs/<feature>/design-brief.md` si hacen falta.
 - Playwright es el runner de API/DB/E2E/visual; Vitest solo unitarios puros.
 - Los tests de esquema y pg_cron siguen en SQL puro.
+- Context7 es la fuente de documentación de librerías; Playwright para verificación visual.
 - PostgreSQL y app en Docker; DB en `localhost:5433`, app en `8080`, app-test en `8081`.
 - `wall` para desarrollo y `wall_test` para tests; `pg_cron` solo en `wall`.
 - Playwright en el host contra `app-test`; Vitest solo unitarios.

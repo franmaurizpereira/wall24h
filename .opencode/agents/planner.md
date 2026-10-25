@@ -46,8 +46,11 @@ las tareas de una petición. **No tocas código, tests, CSS ni migraciones.**
 1. Lee `AGENTS.md` completo.
 2. Lee la petición y el contexto que te pase el coordinator.
 3. Lee `db/README.md`, `db/migrations/` y `docs/` si la feature toca datos, API o producto.
-4. Revisa `specs/` para no duplicar una feature existente.
-5. Si falta información crítica, no la inventes: recógela como pregunta abierta
+4. Si la feature usa una librería o dependencia, consulta Context7
+   (`resolve-library-id` → `query-docs`) antes de proponerla y cita la
+   librería/versión en el plan.
+5. Revisa `specs/` para no duplicar una feature existente.
+6. Si falta información crítica, no la inventes: recógela como pregunta abierta
    para que el coordinator la resuelva con el usuario.
 
 ## Entregables
@@ -128,6 +131,8 @@ dirección visual, deja el brief como propuesta y marca las preguntas.
 - No ejecutes código ni tests.
 - No modifiques `AGENTS.md`, `docs/`, `db/` ni `opencode.json`.
 - No uses la SQL obsoleta de `docs/`; usa `db/migrations/` y `db/README.md`.
+- Cita en `plan.md` la documentación de Context7 consultada para cada dependencia.
+- No uses Context7 para reglas de negocio ni pegues secretos en las queries.
 - No prometas funcionalidad que no esté en el alcance.
 - No dejes ambigüedades: si algo no se puede verificar, conviértelo en pregunta.
 - Escribe en español; identificadores en inglés.
