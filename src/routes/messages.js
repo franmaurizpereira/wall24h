@@ -11,6 +11,10 @@ const createMessageSchema = z.object({
   text: z.string().trim().min(1).max(500),
 });
 
+const createCommentSchema = z.object({
+  text: z.string().trim().min(1).max(300),
+});
+
 export default async function messageRoutes(app) {
   app.post('/messages', { preHandler: requireUser }, async (request, reply) => {
     const { text } = createMessageSchema.parse(request.body);
@@ -29,6 +33,33 @@ export default async function messageRoutes(app) {
         id: Number(message.id),
         created_at: toIso(message.created_at),
         expires_at: toIso(message.expires_at),
+      });
+    } catch (error) {
+      throw mapDbError(error);
+    }
+  });
+
+  app.post('/messages/:id/comments', { preHandler: requireUser }, async (request, reply) => {
+    const id = Number(request.params.id);
+    if (!Number.isInteger(id) || id <= 0) {
+      throw httpError(410, 'message_gone', 'Este mensaje ya expiró');
+    }
+
+    const { text } = createCommentSchema.parse(request.body);
+    await moderate(text);
+
+    try {
+      const { rows } = await query(
+        `INSERT INTO comments (message_id, user_id, content)
+         VALUES ($1, $2, $3)
+         RETURNING id, created_at`,
+        [id, request.user.id, text],
+      );
+
+      const comment = rows[0];
+      return reply.code(201).send({
+        id: Number(comment.id),
+        created_at: toIso(comment.created_at),
       });
     } catch (error) {
       throw mapDbError(error);

@@ -6,8 +6,8 @@ comentarios y el más comentado se convierte en el héroe del muro.
 > Repositorio: <https://github.com/franmaurizpereira/wall24h>
 >
 > Estado: **fase 0**, **fase 1 (T01/T02)** y **fase 2 (T03)** completadas;
-> **fase 3 en progreso (T04-T05)**. El muro se puede leer y publicar mensajes.
-> El siguiente paso son los comentarios (T06); el frontend llega en la fase 4.
+> **fase 3 en progreso (T04-T06)**. El muro se puede leer, publicar y comentar.
+> El siguiente paso son los reportes (T07); el frontend llega en la fase 4.
 
 ## Qué es
 
@@ -29,7 +29,7 @@ comentarios y el más comentado se convierte en el héroe del muro.
 | 0 | ✅ Esquema PostgreSQL, constraints, triggers, purga y tests |
 | 1 | ✅ Scaffold, Docker, migraciones, lint, typecheck, Playwright/Vitest y salud |
 | 2 | ✅ Auth, sesiones en BD, cookies y rate limit |
-| 3 | 🟡 API del muro, mensajes, comentarios y reportes (T04-T05 completadas) |
+| 3 | 🟡 API del muro, mensajes, comentarios y reportes (T04-T06 completadas) |
 | 4–9 | ⏳ Frontend, polling, moderación, tests y despliegue |
 
 Existe hoy:
@@ -41,10 +41,12 @@ Existe hoy:
   `server_time`, comentarios y `410` para vencidos.
 - Publicación autenticada: `POST /api/messages`, con validación, moderación,
   24 h y 409 de activo/duplicado.
+- Comentarios: `POST /api/messages/:id/comments`, uno por usuario/mensaje,
+  con validación, moderación y 403/409/410.
 - `Dockerfile`, `docker-compose.yml`, `db/Dockerfile`, `db/init/` y `Caddyfile`.
 - `docker compose` con `db`, `migrate`, `migrate-test`, `app`, `app-test` y `caddy`.
 - `playwright.config.ts`, `vitest.config.ts` y tests de salud, auth, muro,
-  publicación y DB.
+  publicación, comentarios y DB.
 - `db/migrations/001_schema.sql` y `db/migrations/002_cron.sql`.
 - `db/tests/schema_test.sql` y scripts de validación real.
 - `AGENTS.md`, los agentes SDD y `specs/001-muro-24h/`.
@@ -52,10 +54,11 @@ Existe hoy:
 
 Todavía no existe:
 
-- Comentar, reportar, frontend React y tests E2E/visual.
+- Reportar, frontend React y tests E2E/visual.
 - El `test:e2e` y `test:visual` están configurados, pero aún no tienen specs.
 - La SPA no se sirve todavía; `/healthz`, `/api/auth/*`, `/api/wall`,
-  `/api/messages` y `/api/messages/:id` son lo disponible.
+  `/api/messages`, `/api/messages/:id` y `/api/messages/:id/comments` son lo
+  disponible.
 
 ## Stack objetivo
 
@@ -78,7 +81,8 @@ curl http://localhost:8080/healthz
 ```
 
 La app base expone `/healthz`, `/api/auth/*`, `/api/wall`,
-`/api/messages` y `/api/messages/:id`; la SPA se integra en T09.
+`/api/messages`, `/api/messages/:id` y `/api/messages/:id/comments`; la SPA se
+integra en T09.
 
 ## Docker
 
@@ -151,8 +155,9 @@ npm run test:down
 
 - Playwright corre en el host contra `app-test` (`http://localhost:8081`) y
   `wall_test` (`localhost:5433`).
-- La suite actual tiene 24 tests: setup, seis de auth, salud, ocho de
-  publicación, cinco del muro, dos de concurrencia DB y esquema.
+- La suite actual tiene 33 tests: setup, seis de auth, salud, ocho de
+  publicación, seis de comentarios, cinco del muro, dos de concurrencia DB de
+  mensajes, tres de DB de comentarios y esquema.
 - `test:e2e` y `test:visual` están configurados, pero sus specs llegan en las
   fases 5 y 6.
 - Los tests SQL de esquema y `pg_cron` siguen en `psql`, no en Playwright.

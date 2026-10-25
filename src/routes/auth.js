@@ -50,7 +50,7 @@ function clearSessionCookie(reply) {
 export default async function authRoutes(app) {
   app.post(
     '/register',
-    { config: { rateLimit: { max: 20, timeWindow: '1 minute' } } },
+    { config: { rateLimit: { max: 50, timeWindow: '1 minute' } } },
     async (request, reply) => {
       const { username, email, password } = registerSchema.parse(request.body);
       const passwordHash = await hash(password, ARGON2_OPTIONS);

@@ -134,18 +134,20 @@
 
 ## T06 — Comentarios
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T03, T04
 - **RF**: RF-06
 - **Archivos**: `src/routes/messages.js`, `src/lib/errors.js`,
-  `tests/api/comments.spec.ts`, `tests/db/comments.spec.ts`
+  `src/lib/moderation.js`, `tests/api/comments.spec.ts`,
+  `tests/db/comments.spec.ts`
 - **Criterios**:
   - `201` y contador +1.
   - Propio `403`; vencido/inexistente `410`; duplicado `409`; inválido `422`.
   - Un comentario por usuario/mensaje.
 - **Tests**: Playwright API + DB: 201, 403, 409, 410, 422, contador y
   concurrencia.
+- **Evidencia**: `specs/001-muro-24h/evidence/T06-comments.md`.
 
 ## T07 — Reportes
 

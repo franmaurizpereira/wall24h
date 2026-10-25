@@ -10,10 +10,11 @@
 - Fase 2 completada (T03): registro, login, logout, `/me`, sesiones en BD, Argon2id, cookies y rate limit.
 - T04 completada: `GET /api/wall` y `GET /api/messages/:id` con lectura anónima, orden, héroe y `410`.
 - T05 completada: `POST /api/messages` con validación, moderación, 24 h y 409 de activo/duplicado.
+- T06 completada: `POST /api/messages/:id/comments` con validación, moderación, 403/409/410, contador y concurrencia.
 - Andamiaje SDD creado: `AGENTS.md`, `.opencode/agents/` y `specs/001-muro-24h/`.
-- No hay frontend ni comentarios/reportes todavía.
+- No hay frontend ni reportes todavía.
 - Brief visual en `.opencode/design-brief.md`; es un documento, no un agente. Pendiente de aprobación.
-- Siguiente paso: T06, comentarios.
+- Siguiente paso: T07, reportes.
 
 ## Decisiones importantes
 
@@ -27,7 +28,8 @@
 - Testing: Playwright para API/DB/E2E/visual; Vitest solo unitarios puros; tests SQL en `psql`. Motivo: un runner para flujos reales y velocidad para funciones puras.
 - Docker: PostgreSQL + app en compose; DB 5433, app 8080, app-test 8081; el PostgreSQL local del 5432 queda fuera. Motivo: entorno reproducible y sin conflictos.
 - Context7: documentación de librerías; Playwright: verificación visual. Motivo: evitar APIs desactualizadas y validar la UI real.
-- Auth: Argon2id, token de 32 bytes, sha256 en BD, cookie 7 días y rate limit 20/min. Motivo: sesión segura y sin estado en memoria.
+- Auth: Argon2id, token de 32 bytes, sha256 en BD, cookie 7 días y rate limit (registro 50/min, login 20/min). Motivo: sesión segura y sin estado en memoria.
+- Comentarios: uno por usuario/mensaje, 1–300, sin auto-comentario, sin vencidos y con moderación. Motivo: ranking justo y abuso controlado.
 
 ## Errores a evitar
 

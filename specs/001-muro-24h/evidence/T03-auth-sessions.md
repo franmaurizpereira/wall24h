@@ -14,7 +14,7 @@
 - Argon2id con `memoryCost: 19456`, `timeCost: 2`, `parallelism: 1`.
 - Cookie `session` con `HttpOnly`, `SameSite=Lax`, `Path=/`, `Max-Age=604800`
   y `Secure` cuando `NODE_ENV=production`.
-- Rate limit de 20 req/min por IP en registro y login.
+- Rate limit de 50 req/min por IP en registro y 20 req/min en login.
 - Registro transaccional de usuario + sesión.
 - Logout revoca la sesión y limpia la cookie.
 - `/me` rechaza sesiones vencidas y limpia la cookie.
