@@ -15,6 +15,11 @@ export function Countdown({ expiresAt, serverTime, onExpire }: Props) {
   const serverOffset = useMemo(() => Date.now() - Date.parse(serverTime), [serverTime]);
   const [remaining, setRemaining] = useState(() => Date.parse(expiresAt) - Date.parse(serverTime));
 
+  // Recalibra al recibir un `server_time` nuevo del polling.
+  useEffect(() => {
+    setRemaining(Date.parse(expiresAt) - Date.parse(serverTime));
+  }, [expiresAt, serverTime]);
+
   useEffect(() => {
     const update = () => {
       const next = Date.parse(expiresAt) - (Date.now() - serverOffset);

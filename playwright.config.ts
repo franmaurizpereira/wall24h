@@ -35,6 +35,13 @@ export default defineConfig({
       testMatch: /setup\/.*\.setup\.ts/,
     },
     {
+      name: 'e2e',
+      testMatch: /e2e\/.*\.spec\.ts/,
+      dependencies: ['setup'],
+      use: { ...devices['Desktop Chrome'] },
+    },
+    // API/DB después de E2E: el test de rate limit de login agota el bucket por IP.
+    {
       name: 'api',
       testMatch: /api\/.*\.spec\.ts/,
       dependencies: ['setup'],
@@ -43,12 +50,6 @@ export default defineConfig({
       name: 'db',
       testMatch: /db\/.*\.spec\.ts/,
       dependencies: ['setup'],
-    },
-    {
-      name: 'e2e',
-      testMatch: /e2e\/.*\.spec\.ts/,
-      dependencies: ['setup'],
-      use: { ...devices['Desktop Chrome'] },
     },
     {
       name: 'visual',

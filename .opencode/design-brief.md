@@ -3,13 +3,14 @@
 > Documento de referencia. **No es un agente** y no se carga como configuración
 > de OpenCode. Es el brief visual canónico del proyecto.
 
-- **Estado**: borrador; requiere aprobación antes de invocar al `graphic-designer`
+- **Estado**: aprobado el 2026-10-25 por el usuario
 - **Feature inicial**: `001-muro-24h`
 - **Alcance**: apariencia visual del muro, detalle, auth y estados
 - **Archivo permitido**: `web/css/style.css`
 
-> Este brief todavía no está aprobado. El coordinator debe confirmar la
-> dirección visual con el usuario antes de iniciar el rediseño.
+> Dirección aprobada: **editorial oscuro de alto contraste con acento cálido**.
+> El `graphic-designer` puede proponer tipografía, densidad y ajustes concretos
+> dentro de este brief. El rediseño se implementa en V01, después de T10 y T11.
 
 ## 1. Personalidad
 
@@ -39,9 +40,10 @@ tradicional. La interfaz debe transmitir:
 - Sin `!important` salvo justificación documentada.
 - Debe funcionar con el DOM y las clases que entregue el implementer.
 
-## 4. Dirección propuesta (a confirmar)
+## 4. Dirección aprobada: editorial oscuro
 
-Propuesta inicial: **editorial oscuro de alto contraste**, con un acento cálido.
+Dirección aprobada por el usuario: **editorial oscuro de alto contraste**, con
+un acento cálido.
 
 | Token | Propuesta inicial |
 |---|---|
@@ -128,7 +130,7 @@ Evitar:
 
 ## 11. Criterios de aprobación
 
-- [ ] La dirección visual está aprobada por el usuario.
+- [x] La dirección visual está aprobada por el usuario.
 - [ ] El héroe se distingue claramente del resto.
 - [ ] El countdown y los comentarios se leen bien.
 - [ ] Responsive 360–1280 sin overflow.
@@ -139,8 +141,11 @@ Evitar:
 
 ## 12. Preguntas abiertas
 
-- ¿Tema oscuro, claro o ambos?
-- ¿Qué acento de color prefiere el usuario?
-- ¿Tipografía concreta o libertad para proponer?
-- ¿Densidad compacta o aireada?
-- ¿Referencias visuales que le gusten o que quiera evitar?
+La dirección general está aprobada. Quedan como libertad del `graphic-designer`
+dentro del brief:
+
+- Tipografía concreta y escala.
+- Densidad (compacta o aireada) sin perder legibilidad a 360 px.
+- Acento cálido exacto (ámbar o coral).
+- Referencias visuales concretas; si no se aportan, el diseñador propone y
+  documenta las suyas.

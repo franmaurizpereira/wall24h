@@ -260,15 +260,14 @@ App
 | 1 | Scaffold, package.json, TS, lint, Docker (db/app/app-test), migraciones, healthcheck y base Playwright/Vitest | Completada (T01/T02) |
 | 2 | Auth, sesiones en BD, cookies, rate limit | Completada (T03) |
 | 3 | API de muro, mensajes, comentarios, reportes y purga | Completada (T04-T08) |
-| 4 | Frontend shell, muro, héroe y countdown | Pendiente |
-| 5 | Detalle, comentarios, auth y reportes | Pendiente |
-| 6 | Polling, errores y pulido | Pendiente |
-| 7 | Moderación, rate limit y hardening | Pendiente |
-| 8 | Suite Playwright: API, DB, E2E y visual | Pendiente |
-| 9 | Documentación, diagramas y despliegue | Pendiente |
+| 4 | Frontend shell, muro, héroe, countdown, detalle, auth y reportes | Completada (T09-T11) |
+| 5 | Detalle, comentarios, auth y reportes | Completada (T10) |
+| 6 | Polling, errores y pulido | Completada (T11) |
+| 7 | Moderación, rate limit y hardening | Pendiente (T12) |
+| 8 | Suite Playwright: API, DB, E2E y visual | Parcial (visual en V01/T13) |
+| 9 | Documentación, diagramas y despliegue | Pendiente (T14) |
 
-La fase 1 debe crear los comandos `npm` que hoy no existen. Hasta entonces, no
-se usan como si funcionaran.
+Los comandos `npm` ya existen y están descritos en `AGENTS.md` sección 8.
 
 ## 9. Tests
 

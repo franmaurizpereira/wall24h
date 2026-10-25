@@ -44,13 +44,15 @@ Reglas de lectura:
 - **T07 completada**: `POST /api/messages/:id/report` con `pending`, 403/409/410/422 y cola privada.
 - **T08 completada**: expiración filtrada en API, purga real con cascada, sesiones vencidas y reintento de deadlocks.
 - **T09 completada**: shell React + Vite + TS, muro público con héroe, grid, countdown por `server_time`, estados de carga/vacío/error, contrato de clases y build de la SPA servido por Fastify.
-- **No existe todavía**: detalle/comentarios/auth/reportes en UI, polling y specs visuales.
+- **T10 completada**: detalle con comentarios, auth modal, publicación, reportes, toasts, router mínimo y errores de API mapeados en la UI.
+- **T11 completada**: polling 15 s con pausa por visibilidad, countdown recalibrado, reordenación del héroe, aviso de datos obsoletos y responsive 360–1280.
+- **No existe todavía**: specs visuales con snapshots y el rediseño de `web/css/style.css` (V01); quedan T12-T13.
 - **Entorno decidido**: PostgreSQL y app en Docker; el PostgreSQL local del 5432 no se usa. La base de Docker se publica en 5433, la app en 8080 y la app de test en 8081.
 - `docs/` es referencia histórica:
   - `docs/init.sql` y `docs/codigo_base_de_datos_postgres.sql` están obsoletos; **no los uses**.
   - `docs/server.js` es un borrador, no la implementación de producción.
   - `docs/docker-compose.yml` usa una imagen (`cybertecpostgresql/postgresql:16-3`) que no está disponible públicamente.
-- La siguiente tarea es **T10: detalle, comentarios, auth y reportes UI**.
+- La siguiente tarea es **V01: rediseño visual** con el brief aprobado; después T12-T13.
 - El paquete SDD inicial vive en `specs/001-muro-24h/`.
 
 ### Roadmap de referencia
@@ -61,9 +63,9 @@ Reglas de lectura:
 | 1 | Scaffold, Docker, migraciones, lint, typecheck y base Playwright/Vitest (completada; T01/T02) |
 | 2 | Auth, sesiones en BD, cookies y rate limit (completada; T03) |
 | 3 | API de muro, mensajes, comentarios, reportes y purga (completada; T04-T08) |
-| 4 | Frontend: shell, muro, héroe, countdown y estados (T09 completada; T10-T11 pendientes) |
-| 5 | Detalle, comentarios, reportes y pantallas de auth |
-| 6 | Polling, revalidación y pulido de errores |
+| 4 | Frontend: shell, muro, héroe, countdown y estados (T09-T11 completadas) |
+| 5 | Detalle, comentarios, reportes y pantallas de auth (cubiertas por T10) |
+| 6 | Polling, revalidación y pulido de errores (T11 completada) |
 | 7 | Moderación, rate limit y endurecimiento |
 | 8 | Suite Playwright: API, DB, E2E y visual |
 | 9 | Documentación final, diagramas y despliegue |
@@ -592,11 +594,12 @@ Decisiones cerradas:
 - `wall` para desarrollo y `wall_test` para tests; `pg_cron` solo en `wall`.
 - Playwright en el host contra `app-test`; Vitest solo unitarios.
 
-Pendiente de decidir en el brief visual:
+Decidido en el brief visual (aprobado el 2026-10-25):
 
-- Paleta, tipografía, densidad, radios, sombras y movimiento.
-- Tema claro/oscuro o ambos.
-- Referencias visuales y “do/don’t”.
+- Dirección editorial oscura de alto contraste con acento cálido.
+- Tipografía, densidad, radios, sombras y movimiento quedan como propuesta del
+  `graphic-designer` dentro del brief.
+- El rediseño se aplica en V01, después de T11.
 
 Fuera del MVP: verificación de email, recuperación de contraseña, panel de administración, SSE/WebSocket, notificaciones, edición de comentarios e imágenes.
 

@@ -14,9 +14,11 @@
 - T07 completada: `POST /api/messages/:id/report` con `pending`, 403/409/410/422 y cola privada.
 - T08 completada: filtro de expiración, purga real con cascada, sesiones y reintento de deadlocks.
 - T09 completada: shell React + Vite, muro con héroe/grid, countdown por `server_time`, estados y SPA en Docker.
+- T10 completada: detalle, comentarios, auth, publicación, reportes, toasts y router mínimo.
+- T11 completada: polling 15 s, pausa por visibilidad, stale sin perder datos y responsive.
 - Andamiaje SDD creado: `AGENTS.md`, `.opencode/agents/` y `specs/001-muro-24h/`.
-- Brief visual en `.opencode/design-brief.md`; es un documento, no un agente. Pendiente de aprobación.
-- Siguiente paso: T10, detalle, comentarios, auth y reportes UI.
+- Brief visual en `.opencode/design-brief.md` aprobado: editorial oscuro con acento cálido.
+- Siguiente paso: V01, rediseño visual en `web/css/style.css`; después T12-T13.
 
 ## Decisiones importantes
 

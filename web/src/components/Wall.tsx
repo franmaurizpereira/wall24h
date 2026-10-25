@@ -1,4 +1,4 @@
-import type { WallResponse } from '../api/client';
+import type { WallItem, WallResponse } from '../api/client';
 import { EmptyState } from './EmptyState';
 import { ErrorState } from './ErrorState';
 import { LoadingState } from './LoadingState';
@@ -9,11 +9,34 @@ type Props = {
   data: WallResponse | null;
   loading: boolean;
   error: string | null;
+  stale: boolean;
   onRefresh: () => void;
+  onOpen: (id: number) => void;
+  onReport: (message: WallItem) => void;
   onExpire?: () => void;
 };
 
-export function Wall({ data, loading, error, onRefresh, onExpire }: Props) {
+function StaleNotice({ onRetry }: { onRetry: () => void }) {
+  return (
+    <div className="wall__stale" role="status" data-testid="wall-stale">
+      <p>No se pudo actualizar. Mostrando los últimos datos.</p>
+      <button type="button" className="button button--ghost button--small" onClick={onRetry}>
+        Reintentar
+      </button>
+    </div>
+  );
+}
+
+export function Wall({
+  data,
+  loading,
+  error,
+  stale,
+  onRefresh,
+  onOpen,
+  onReport,
+  onExpire,
+}: Props) {
   if (loading) {
     return <LoadingState />;
   }
@@ -23,7 +46,12 @@ export function Wall({ data, loading, error, onRefresh, onExpire }: Props) {
   }
 
   if (!data || data.items.length === 0) {
-    return <EmptyState />;
+    return (
+      <>
+        {stale ? <StaleNotice onRetry={onRefresh} /> : null}
+        <EmptyState />
+      </>
+    );
   }
 
   const top = data.items.find((item) => item.is_top);
@@ -31,7 +59,16 @@ export function Wall({ data, loading, error, onRefresh, onExpire }: Props) {
 
   return (
     <main className="wall" data-testid="wall">
-      {top ? <TopMessage message={top} serverTime={data.server_time} onExpire={onExpire} /> : null}
+      {stale ? <StaleNotice onRetry={onRefresh} /> : null}
+      {top ? (
+        <TopMessage
+          message={top}
+          serverTime={data.server_time}
+          onOpen={onOpen}
+          onReport={onReport}
+          onExpire={onExpire}
+        />
+      ) : null}
       {rest.length > 0 ? (
         <section className="wall__grid" data-testid="wall-grid" aria-label="Resto de mensajes">
           {rest.map((message) => (
@@ -39,6 +76,8 @@ export function Wall({ data, loading, error, onRefresh, onExpire }: Props) {
               key={message.id}
               message={message}
               serverTime={data.server_time}
+              onOpen={onOpen}
+              onReport={onReport}
               onExpire={onExpire}
             />
           ))}

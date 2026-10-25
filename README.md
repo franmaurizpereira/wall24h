@@ -6,9 +6,9 @@ comentarios y el más comentado se convierte en el héroe del muro.
 > Repositorio: <https://github.com/franmaurizpereira/wall24h>
 >
 > Estado: **fase 0**, **fase 1 (T01/T02)**, **fase 2 (T03)**, **fase 3
-> (T04-T08)** y **T09** completadas. La API del muro está completa y la SPA ya
-> muestra el muro, el héroe y el countdown. El siguiente paso es T10 (detalle,
-> comentarios, auth y reportes UI).
+> (T04-T08)**, **T09**, **T10** y **T11** completadas. La API y la UI cubren
+> muro, detalle, comentarios, auth, publicación, reportes y polling. El
+> siguiente paso es V01, el rediseño visual.
 
 ## Qué es
 
@@ -31,8 +31,10 @@ comentarios y el más comentado se convierte en el héroe del muro.
 | 1 | ✅ Scaffold, Docker, migraciones, lint, typecheck, Playwright/Vitest y salud |
 | 2 | ✅ Auth, sesiones en BD, cookies y rate limit |
 | 3 | ✅ API del muro, mensajes, comentarios, reportes y purga (T04-T08) |
-| 4 | 🚧 Frontend: shell, muro, héroe y countdown (T09 completada; T10-T11 pendientes) |
-| 5–9 | ⏳ Polling, moderación, tests y despliegue |
+| 4 | ✅ Frontend: shell, muro, héroe, countdown y estados (T09-T11) |
+| 5 | ✅ Detalle, comentarios, reportes y pantallas de auth (T10) |
+| 6 | ✅ Polling, revalidación y pulido de errores (T11) |
+| 7–9 | ⏳ Moderación, tests visuales y despliegue |
 
 Existe hoy:
 
@@ -52,6 +54,11 @@ Existe hoy:
 - Frontend React + Vite + TypeScript en `web/`: muro público, héroe, grid,
   contador de comentarios, countdown por `server_time` y estados de
   carga/vacío/error. La SPA se compila y se sirve desde Fastify.
+- Detalle `/messages/:id` con comentarios, formulario, reporte y `410`.
+- Auth modal de login/registro, sesión en cabecera, logout y publicación.
+- Reporte con motivo y feedback de errores 401/403/409/410/422.
+- Polling cada 15 s con pausa por pestaña oculta y aviso si falla un refresco.
+- Toasts accesibles y router mínimo con History API.
 - `Dockerfile`, `docker-compose.yml`, `db/Dockerfile`, `db/init/` y `Caddyfile`.
 - `docker compose` con `db`, `migrate`, `migrate-test`, `app`, `app-test` y `caddy`.
 - `playwright.config.ts`, `vitest.config.ts` y tests de salud, auth, muro,
@@ -63,10 +70,8 @@ Existe hoy:
 
 Todavía no existe:
 
-- Detalle del mensaje, formularios de comentario, auth y reportes en la UI.
-- Polling de 15 s y pulido de errores (T11).
-- Specs visuales y rediseño de `web/css/style.css` (V01).
-- Las rutas de escritura ya existen en la API; la UI las conectará en T10.
+- Rediseño visual de `web/css/style.css` y specs con snapshots (V01).
+- Moderación/endurecimiento final y suite visual completa (T12-T13).
 
 ## Stack objetivo
 
@@ -159,11 +164,11 @@ Requiere `podman` o `docker` y el cliente `psql`:
 Tests disponibles:
 
 ```sh
-npm test              # Playwright: setup + api + db + e2e
+npm test              # Playwright: setup + e2e + api + db
 npm run test:api      # /healthz + auth + muro + mensajes + comentarios + reportes
 npm run test:db       # esquema, constraints y expiración en wall_test
-npm run test:e2e      # muro público: héroe, countdown y estados
-npm run test:unit     # Vitest: funciones puras (sin tests todavía)
+npm run test:e2e      # muro, auth, detalle, publicación, reportes y polling
+npm run test:unit     # Vitest: formatComments y formatCountdown
 npm run test:all      # test:up + unit + Playwright + test:down
 npm run test:up
 npm run test:down
@@ -171,11 +176,11 @@ npm run test:down
 
 - Playwright corre en el host contra `app-test` (`http://localhost:8081`) y
   `wall_test` (`localhost:5433`).
-- La suite actual tiene 44 tests: setup, seis de auth, salud, ocho de
-  publicación, seis de comentarios, cinco de reportes, cinco del muro, dos de
-  expiración/purga, dos de concurrencia DB de mensajes, tres de DB de
-  comentarios, esquema y cuatro E2E del muro.
-- `test:visual` está configurado; sus specs y el rediseño llegan en V01.
+- La suite actual tiene 60 tests Playwright: setup, 20 E2E, 31 de API y 8 de DB.
+  Vitest añade 4 tests de funciones puras.
+- Los proyectos corren `setup → e2e → api → db`; el test de rate limit de login
+  se ejecuta después de E2E para no bloquear el flujo de auth.
+- `test:visual` está configurado; los snapshots llegan con V01.
 - Los tests SQL de esquema y `pg_cron` siguen en `psql`, no en Playwright.
 - Evidencia: HTML report, traces y screenshots en `specs/<feature>/evidence/`.
 

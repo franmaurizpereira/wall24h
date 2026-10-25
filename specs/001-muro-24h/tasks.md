@@ -203,7 +203,7 @@
 
 ## T10 — Detalle, comentarios, auth y reportes UI
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T03, T06, T07, T09
 - **RF**: RF-01, RF-06, RF-09
@@ -216,10 +216,11 @@
   - Reporte con motivo.
   - Errores 401/403/409/410/422 con mensajes claros.
 - **Tests**: Playwright E2E: detalle, comentarios, auth y reportes.
+- **Evidencia**: `evidence/T10-detail-auth-reports.md`.
 
 ## T11 — Polling, errores y pulido
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T09, T10
 - **RF**: RF-03, RF-07
@@ -235,6 +236,8 @@
   - Errores de red no rompen el muro.
 - **Tests**: Playwright E2E + visual: polling, countdown, reordenación y
   responsive.
+- **Evidencia**: `evidence/T11-polling.md`.
+- **Nota**: la captura/regresión visual se consolida en V01 con el CSS aprobado.
 
 ## T12 — Moderación, rate limit y hardening
 
