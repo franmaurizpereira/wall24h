@@ -77,7 +77,7 @@
 
 ## T03 — Auth y sesiones
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T02
 - **RF**: RF-01, RF-10
@@ -93,6 +93,7 @@
     `pg` y `@fastify/rate-limit`; citar docs en la evidencia.
 - **Tests**: Playwright API: flujo completo, cookie, sesión vencida, logout,
   duplicados.
+- **Evidencia**: `specs/001-muro-24h/evidence/T03-auth-sessions.md`.
 
 ## T04 — Lectura del muro y detalle
 

@@ -5,9 +5,10 @@ comentarios y el más comentado se convierte en el héroe del muro.
 
 > Repositorio: <https://github.com/franmaurizpereira/wall24h>
 >
-> Estado: **fase 0 completada** y **fase 1 (T01/T02) completada**.
-> La app base, Docker, migraciones y tests de salud están listos. El siguiente
-> paso es auth y sesiones (T03); el frontend llega en la fase 4.
+> Estado: **fase 0**, **fase 1 (T01/T02)** y **fase 2 (T03)** completadas.
+> La app base, Docker, migraciones, auth/sesiones y tests de salud/API/DB están
+> listos. El siguiente paso es la API del muro (fase 3); el frontend llega en la
+> fase 4.
 
 ## Qué es
 
@@ -28,15 +29,17 @@ comentarios y el más comentado se convierte en el héroe del muro.
 |---|---|
 | 0 | ✅ Esquema PostgreSQL, constraints, triggers, purga y tests |
 | 1 | ✅ Scaffold, Docker, migraciones, lint, typecheck, Playwright/Vitest y salud |
-| 2–9 | ⏳ Auth, API, frontend, polling, moderación, tests y despliegue |
+| 2 | ✅ Auth, sesiones en BD, cookies y rate limit |
+| 3–9 | ⏳ API del muro, frontend, polling, moderación, tests y despliegue |
 
 Existe hoy:
 
 - `package.json`, `package-lock.json`, TS/ESLint/Prettier y scripts.
 - `src/` con Fastify, `/healthz`, pool de PostgreSQL y manejo de errores.
+- Auth completo: registro, login, logout, `/me`, Argon2id, sesiones y cookies.
 - `Dockerfile`, `docker-compose.yml`, `db/Dockerfile`, `db/init/` y `Caddyfile`.
 - `docker compose` con `db`, `migrate`, `migrate-test`, `app`, `app-test` y `caddy`.
-- `playwright.config.ts`, `vitest.config.ts` y tests de salud/API/DB.
+- `playwright.config.ts`, `vitest.config.ts` y tests de salud, auth y DB.
 - `db/migrations/001_schema.sql` y `db/migrations/002_cron.sql`.
 - `db/tests/schema_test.sql` y scripts de validación real.
 - `AGENTS.md`, los agentes SDD y `specs/001-muro-24h/`.
@@ -44,9 +47,9 @@ Existe hoy:
 
 Todavía no existe:
 
-- Frontend React, API de negocio (auth/muro/comentarios/reportes) y tests E2E/visual.
+- Frontend React, API de muro/mensajes/comentarios/reportes y tests E2E/visual.
 - El `test:e2e` y `test:visual` están configurados, pero aún no tienen specs.
-- La SPA no se sirve todavía; `/healthz` y `/api/*` son lo disponible.
+- La SPA no se sirve todavía; `/healthz` y `/api/auth/*` son lo disponible.
 
 ## Stack objetivo
 
@@ -131,7 +134,7 @@ Tests disponibles:
 
 ```sh
 npm test              # Playwright: setup + api + db (+ e2e/visual cuando existan)
-npm run test:api      # /healthz
+npm run test:api      # /healthz + auth
 npm run test:db       # esquema en wall_test
 npm run test:unit     # Vitest: funciones puras (sin tests todavía)
 npm run test:all      # test:up + unit + Playwright + test:down
@@ -141,6 +144,7 @@ npm run test:down
 
 - Playwright corre en el host contra `app-test` (`http://localhost:8081`) y
   `wall_test` (`localhost:5433`).
+- La suite actual tiene 9 tests: setup, seis de auth, salud y esquema.
 - `test:e2e` y `test:visual` están configurados, pero sus specs llegan en las
   fases 5 y 6.
 - Los tests SQL de esquema y `pg_cron` siguen en `psql`, no en Playwright.

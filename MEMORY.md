@@ -7,10 +7,11 @@
 
 - Fase 0 completada: esquema PostgreSQL, constraints, triggers, purga y tests en `db/`.
 - Fase 1 completada (T01/T02): `package.json`, Fastify base con `/healthz`, Docker Compose (`db`, `app`, `app-test`), migraciones y tests Playwright/Vitest.
+- Fase 2 completada (T03): registro, login, logout, `/me`, sesiones en BD, Argon2id, cookies y rate limit.
 - Andamiaje SDD creado: `AGENTS.md`, `.opencode/agents/` y `specs/001-muro-24h/`.
-- No hay frontend ni API de negocio todavía.
+- No hay frontend ni API de muro/comentarios/reportes todavía.
 - Brief visual en `.opencode/design-brief.md`; es un documento, no un agente. Pendiente de aprobación.
-- Siguiente paso: T03 auth y sesiones.
+- Siguiente paso: T04, API de lectura del muro.
 
 ## Decisiones importantes
 
@@ -24,6 +25,7 @@
 - Testing: Playwright para API/DB/E2E/visual; Vitest solo unitarios puros; tests SQL en `psql`. Motivo: un runner para flujos reales y velocidad para funciones puras.
 - Docker: PostgreSQL + app en compose; DB 5433, app 8080, app-test 8081; el PostgreSQL local del 5432 queda fuera. Motivo: entorno reproducible y sin conflictos.
 - Context7: documentación de librerías; Playwright: verificación visual. Motivo: evitar APIs desactualizadas y validar la UI real.
+- Auth: Argon2id, token de 32 bytes, sha256 en BD, cookie 7 días y rate limit 20/min. Motivo: sesión segura y sin estado en memoria.
 
 ## Errores a evitar
 
@@ -36,5 +38,6 @@
 - No inventar comandos: los `npm` aún no existen.
 - No usar React Testing Library ni apuntar Playwright a producción; usar `TEST_DATABASE_URL`.
 - No usar Context7 para reglas de negocio ni pegar claves o datos sensibles en las queries.
+- No guardar tokens de sesión en claro; solo sha256 en `sessions.token_hash`.
 - No usar `localhost` dentro de contenedores; usar `db:5432`. No testear contra `wall`.
 - No confundir `web/css/style.css` con `css/style.css` en la raíz.

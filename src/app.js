@@ -8,6 +8,7 @@ import fastifyStatic from '@fastify/static';
 import Fastify from 'fastify';
 import { ZodError } from 'zod';
 import { ApiError, mapDbError } from './lib/errors.js';
+import authRoutes from './routes/auth.js';
 import healthRoutes from './routes/health.js';
 
 const webDist = path.resolve(fileURLToPath(new URL('../web/dist', import.meta.url)));
@@ -58,6 +59,7 @@ export async function buildApp(options = {}) {
   });
 
   await app.register(healthRoutes);
+  await app.register(authRoutes, { prefix: '/api/auth' });
 
   if (existsSync(webDist)) {
     await app.register(fastifyStatic, {

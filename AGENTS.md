@@ -37,13 +37,14 @@ Reglas de lectura:
 
 - **Fase 0 completada**: `db/migrations/001_schema.sql`, `db/migrations/002_cron.sql`, `db/tests/schema_test.sql` y scripts de validación.
 - **Fase 1 completada (T01/T02)**: `package.json`, TS/ESLint/Prettier, `src/` con Fastify y `/healthz`, `Dockerfile`, `docker-compose.yml`, `db/Dockerfile`, `db/init/`, `Caddyfile`, `playwright.config.ts`, `vitest.config.ts` y tests de salud/API/DB.
-- **No existe todavía**: frontend React, API de negocio (auth/muro/comentarios/reportes) y specs E2E/visual.
+- **Fase 2 completada (T03)**: registro, login, logout, `/me`, sesiones en BD con token sha256, Argon2id, cookies y rate limit.
+- **No existe todavía**: frontend React, API de muro/mensajes/comentarios/reportes y specs E2E/visual.
 - **Entorno decidido**: PostgreSQL y app en Docker; el PostgreSQL local del 5432 no se usa. La base de Docker se publica en 5433, la app en 8080 y la app de test en 8081.
 - `docs/` es referencia histórica:
   - `docs/init.sql` y `docs/codigo_base_de_datos_postgres.sql` están obsoletos; **no los uses**.
   - `docs/server.js` es un borrador, no la implementación de producción.
   - `docs/docker-compose.yml` usa una imagen (`cybertecpostgresql/postgresql:16-3`) que no está disponible públicamente.
-- La siguiente fase es la **fase 2: auth y sesiones**.
+- La siguiente fase es la **fase 3: API de muro, mensajes, comentarios y reportes**.
 - El paquete SDD inicial vive en `specs/001-muro-24h/`.
 
 ### Roadmap de referencia
@@ -52,7 +53,7 @@ Reglas de lectura:
 |---|---|
 | 0 | Esquema PostgreSQL, constraints, triggers y purga (completada) |
 | 1 | Scaffold, Docker, migraciones, lint, typecheck y base Playwright/Vitest (completada; T01/T02) |
-| 2 | Auth, sesiones en BD, cookies y rate limit |
+| 2 | Auth, sesiones en BD, cookies y rate limit (completada; T03) |
 | 3 | API de muro, mensajes, comentarios y reportes |
 | 4 | Frontend: shell, muro, héroe, countdown y estados |
 | 5 | Detalle, comentarios, reportes y pantallas de auth |
