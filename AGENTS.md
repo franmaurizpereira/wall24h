@@ -43,13 +43,14 @@ Reglas de lectura:
 - **T06 completada**: `POST /api/messages/:id/comments` con validación, moderación, 403/409/410, contador y concurrencia.
 - **T07 completada**: `POST /api/messages/:id/report` con `pending`, 403/409/410/422 y cola privada.
 - **T08 completada**: expiración filtrada en API, purga real con cascada, sesiones vencidas y reintento de deadlocks.
-- **No existe todavía**: frontend React y specs E2E/visual.
+- **T09 completada**: shell React + Vite + TS, muro público con héroe, grid, countdown por `server_time`, estados de carga/vacío/error, contrato de clases y build de la SPA servido por Fastify.
+- **No existe todavía**: detalle/comentarios/auth/reportes en UI, polling y specs visuales.
 - **Entorno decidido**: PostgreSQL y app en Docker; el PostgreSQL local del 5432 no se usa. La base de Docker se publica en 5433, la app en 8080 y la app de test en 8081.
 - `docs/` es referencia histórica:
   - `docs/init.sql` y `docs/codigo_base_de_datos_postgres.sql` están obsoletos; **no los uses**.
   - `docs/server.js` es un borrador, no la implementación de producción.
   - `docs/docker-compose.yml` usa una imagen (`cybertecpostgresql/postgresql:16-3`) que no está disponible públicamente.
-- La siguiente fase es la **fase 4: frontend**.
+- La siguiente tarea es **T10: detalle, comentarios, auth y reportes UI**.
 - El paquete SDD inicial vive en `specs/001-muro-24h/`.
 
 ### Roadmap de referencia
@@ -60,7 +61,7 @@ Reglas de lectura:
 | 1 | Scaffold, Docker, migraciones, lint, typecheck y base Playwright/Vitest (completada; T01/T02) |
 | 2 | Auth, sesiones en BD, cookies y rate limit (completada; T03) |
 | 3 | API de muro, mensajes, comentarios, reportes y purga (completada; T04-T08) |
-| 4 | Frontend: shell, muro, héroe, countdown y estados |
+| 4 | Frontend: shell, muro, héroe, countdown y estados (T09 completada; T10-T11 pendientes) |
 | 5 | Detalle, comentarios, reportes y pantallas de auth |
 | 6 | Polling, revalidación y pulido de errores |
 | 7 | Moderación, rate limit y endurecimiento |
@@ -96,7 +97,8 @@ ecco/
 ├── src/                    # backend Fastify
 ├── web/                    # frontend React + Vite
 │   ├── css/style.css       # único archivo de estilos
-│   └── src/
+│   ├── src/
+│   └── STYLE_CONTRACT.md   # clases disponibles para el diseñador
 ├── tests/
 │   ├── setup/              # migraciones, seeds y helpers
 │   ├── api/                # Playwright request
@@ -109,6 +111,7 @@ ecco/
 ├── docker-compose.yml
 ├── Dockerfile
 ├── Caddyfile
+├── vite.config.ts
 ├── playwright.config.ts
 ├── vitest.config.ts
 ├── .env.example

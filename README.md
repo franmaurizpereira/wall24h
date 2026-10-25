@@ -5,9 +5,10 @@ comentarios y el más comentado se convierte en el héroe del muro.
 
 > Repositorio: <https://github.com/franmaurizpereira/wall24h>
 >
-> Estado: **fase 0**, **fase 1 (T01/T02)**, **fase 2 (T03)** y **fase 3
-> (T04-T08)** completadas. La API del muro está completa: leer, publicar,
-> comentar, reportar y purgar. El siguiente paso es el frontend (fase 4).
+> Estado: **fase 0**, **fase 1 (T01/T02)**, **fase 2 (T03)**, **fase 3
+> (T04-T08)** y **T09** completadas. La API del muro está completa y la SPA ya
+> muestra el muro, el héroe y el countdown. El siguiente paso es T10 (detalle,
+> comentarios, auth y reportes UI).
 
 ## Qué es
 
@@ -30,7 +31,8 @@ comentarios y el más comentado se convierte en el héroe del muro.
 | 1 | ✅ Scaffold, Docker, migraciones, lint, typecheck, Playwright/Vitest y salud |
 | 2 | ✅ Auth, sesiones en BD, cookies y rate limit |
 | 3 | ✅ API del muro, mensajes, comentarios, reportes y purga (T04-T08) |
-| 4–9 | ⏳ Frontend, polling, moderación, tests y despliegue |
+| 4 | 🚧 Frontend: shell, muro, héroe y countdown (T09 completada; T10-T11 pendientes) |
+| 5–9 | ⏳ Polling, moderación, tests y despliegue |
 
 Existe hoy:
 
@@ -47,10 +49,13 @@ Existe hoy:
   privada.
 - Expiración: filtro en API, purga real, cascada y purga de sesiones.
 - Reintento de inserts ante deadlocks transitorios.
+- Frontend React + Vite + TypeScript en `web/`: muro público, héroe, grid,
+  contador de comentarios, countdown por `server_time` y estados de
+  carga/vacío/error. La SPA se compila y se sirve desde Fastify.
 - `Dockerfile`, `docker-compose.yml`, `db/Dockerfile`, `db/init/` y `Caddyfile`.
 - `docker compose` con `db`, `migrate`, `migrate-test`, `app`, `app-test` y `caddy`.
 - `playwright.config.ts`, `vitest.config.ts` y tests de salud, auth, muro,
-  publicación, comentarios, reportes, expiración y DB.
+  publicación, comentarios, reportes, expiración, DB y E2E del muro.
 - `db/migrations/001_schema.sql` y `db/migrations/002_cron.sql`.
 - `db/tests/schema_test.sql` y scripts de validación real.
 - `AGENTS.md`, los agentes SDD y `specs/001-muro-24h/`.
@@ -58,11 +63,10 @@ Existe hoy:
 
 Todavía no existe:
 
-- Frontend React y tests E2E/visual.
-- El `test:e2e` y `test:visual` están configurados, pero aún no tienen specs.
-- La SPA no se sirve todavía; `/healthz`, `/api/auth/*`, `/api/wall`,
-  `/api/messages`, `/api/messages/:id`, `/api/messages/:id/comments` y
-  `/api/messages/:id/report` son lo disponible.
+- Detalle del mensaje, formularios de comentario, auth y reportes en la UI.
+- Polling de 15 s y pulido de errores (T11).
+- Specs visuales y rediseño de `web/css/style.css` (V01).
+- Las rutas de escritura ya existen en la API; la UI las conectará en T10.
 
 ## Stack objetivo
 
@@ -84,9 +88,16 @@ docker compose up -d --build
 curl http://localhost:8080/healthz
 ```
 
-La app base expone `/healthz`, `/api/auth/*`, `/api/wall`,
+La app sirve la SPA en `/` y expone `/healthz`, `/api/auth/*`, `/api/wall`,
 `/api/messages`, `/api/messages/:id`, `/api/messages/:id/comments` y
-`/api/messages/:id/report`; la SPA se integra en T09.
+`/api/messages/:id/report`.
+
+Para desarrollo del frontend con recarga en caliente:
+
+```sh
+npm run dev       # API en http://localhost:3000
+npm run dev:web   # Vite en http://localhost:5173 (proxy /api → 8080)
+```
 
 ## Docker
 
@@ -148,9 +159,10 @@ Requiere `podman` o `docker` y el cliente `psql`:
 Tests disponibles:
 
 ```sh
-npm test              # Playwright: setup + api + db (+ e2e/visual cuando existan)
-npm run test:api      # /healthz + auth
-npm run test:db       # esquema en wall_test
+npm test              # Playwright: setup + api + db + e2e
+npm run test:api      # /healthz + auth + muro + mensajes + comentarios + reportes
+npm run test:db       # esquema, constraints y expiración en wall_test
+npm run test:e2e      # muro público: héroe, countdown y estados
 npm run test:unit     # Vitest: funciones puras (sin tests todavía)
 npm run test:all      # test:up + unit + Playwright + test:down
 npm run test:up
@@ -159,12 +171,11 @@ npm run test:down
 
 - Playwright corre en el host contra `app-test` (`http://localhost:8081`) y
   `wall_test` (`localhost:5433`).
-- La suite actual tiene 40 tests: setup, seis de auth, salud, ocho de
+- La suite actual tiene 44 tests: setup, seis de auth, salud, ocho de
   publicación, seis de comentarios, cinco de reportes, cinco del muro, dos de
   expiración/purga, dos de concurrencia DB de mensajes, tres de DB de
-  comentarios y esquema.
-- `test:e2e` y `test:visual` están configurados, pero sus specs llegan en las
-  fases 5 y 6.
+  comentarios, esquema y cuatro E2E del muro.
+- `test:visual` está configurado; sus specs y el rediseño llegan en V01.
 - Los tests SQL de esquema y `pg_cron` siguen en `psql`, no en Playwright.
 - Evidencia: HTML report, traces y screenshots en `specs/<feature>/evidence/`.
 
@@ -189,6 +200,7 @@ wall24h/
 ├── package.json
 ├── package-lock.json
 ├── tsconfig.json
+├── vite.config.ts
 ├── playwright.config.ts
 ├── vitest.config.ts
 ├── eslint.config.js
@@ -215,6 +227,11 @@ wall24h/
 │   ├── db.js
 │   ├── routes/
 │   └── lib/
+├── web/
+│   ├── index.html
+│   ├── css/style.css
+│   ├── src/
+│   └── STYLE_CONTRACT.md
 ├── tests/
 │   ├── setup/
 │   ├── api/
@@ -234,8 +251,9 @@ wall24h/
 └── docs/
 ```
 
-La fase 2 añadirá auth, sesiones y rutas de negocio. La fase 4 añadirá `web/` y
-la SPA; la etapa de build de Vite se integrará en el Dockerfile entonces.
+La SPA vive en `web/`; `vite.config.ts` compila a `web/dist` y Fastify la
+sirve con fallback para rutas del cliente. `web/css/style.css` se estiliza en
+V01.
 
 ## Flujo SDD
 

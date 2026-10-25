@@ -13,10 +13,10 @@
 - T06 completada: `POST /api/messages/:id/comments` con validación, moderación, 403/409/410, contador y concurrencia.
 - T07 completada: `POST /api/messages/:id/report` con `pending`, 403/409/410/422 y cola privada.
 - T08 completada: filtro de expiración, purga real con cascada, sesiones y reintento de deadlocks.
+- T09 completada: shell React + Vite, muro con héroe/grid, countdown por `server_time`, estados y SPA en Docker.
 - Andamiaje SDD creado: `AGENTS.md`, `.opencode/agents/` y `specs/001-muro-24h/`.
-- No hay frontend todavía.
 - Brief visual en `.opencode/design-brief.md`; es un documento, no un agente. Pendiente de aprobación.
-- Siguiente paso: T09, shell del frontend y muro.
+- Siguiente paso: T10, detalle, comentarios, auth y reportes UI.
 
 ## Decisiones importantes
 

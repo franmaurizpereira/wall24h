@@ -186,7 +186,7 @@
 
 ## T09 — Shell del frontend, muro y héroe
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T04
 - **RF**: RF-01, RF-03, RF-07
@@ -199,6 +199,7 @@
   - Clases semánticas documentadas para el diseñador.
   - Se añade la etapa de build de la SPA al Dockerfile y Fastify sirve `web/dist`.
 - **Tests**: Playwright E2E: smoke del muro, héroe, countdown y estados.
+- **Evidencia**: `evidence/T09-frontend-wall.md`.
 
 ## T10 — Detalle, comentarios, auth y reportes UI
 

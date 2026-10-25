@@ -37,6 +37,26 @@ export function uniqueUser(prefix: string) {
   };
 }
 
+/**
+ * Crea un usuario directamente en la base de datos para fixtures de UI.
+ * No crea sesión: la lectura del muro es pública.
+ */
+export async function createUserDirect(prefix: string): Promise<{
+  id: number;
+  username: string;
+  email: string;
+}> {
+  const credentials = uniqueUser(prefix);
+  const rows = await dbQuery<{ id: string; username: string; email: string }>(
+    `INSERT INTO users (username, email, password_hash)
+     VALUES ($1, $2, 'fixture-not-a-real-hash')
+     RETURNING id, username, email`,
+    [credentials.username, credentials.email],
+  );
+
+  return { ...rows[0], id: Number(rows[0].id) };
+}
+
 export async function createSessionContext(prefix: string): Promise<{
   context: APIRequestContext;
   user: { id: number; username: string; email: string; password: string };
