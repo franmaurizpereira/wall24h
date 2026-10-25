@@ -9,10 +9,11 @@
 - Fase 1 completada (T01/T02): `package.json`, Fastify base con `/healthz`, Docker Compose (`db`, `app`, `app-test`), migraciones y tests Playwright/Vitest.
 - Fase 2 completada (T03): registro, login, logout, `/me`, sesiones en BD, Argon2id, cookies y rate limit.
 - T04 completada: `GET /api/wall` y `GET /api/messages/:id` con lectura anónima, orden, héroe y `410`.
+- T05 completada: `POST /api/messages` con validación, moderación, 24 h y 409 de activo/duplicado.
 - Andamiaje SDD creado: `AGENTS.md`, `.opencode/agents/` y `specs/001-muro-24h/`.
-- No hay frontend ni publicación/comentarios/reportes todavía.
+- No hay frontend ni comentarios/reportes todavía.
 - Brief visual en `.opencode/design-brief.md`; es un documento, no un agente. Pendiente de aprobación.
-- Siguiente paso: T05, publicar mensaje.
+- Siguiente paso: T06, comentarios.
 
 ## Decisiones importantes
 

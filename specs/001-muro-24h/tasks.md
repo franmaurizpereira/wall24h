@@ -114,13 +114,13 @@
 
 ## T05 — Publicar mensaje
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T03, T04
 - **RF**: RF-02, RF-04, RF-05
-- **Archivos**: `src/routes/messages.js`, `src/lib/moderation.js`,
-  `src/lib/errors.js`, `tests/api/messages.spec.ts`,
-  `tests/db/messages.spec.ts`
+- **Archivos**: `src/routes/messages.js`, `src/lib/auth.js`,
+  `src/lib/moderation.js`, `src/lib/errors.js`,
+  `tests/api/messages.spec.ts`, `tests/db/messages.spec.ts`
 - **Criterios**:
   - `201` con `expires_at = created_at + 24h`.
   - Texto recortado, 1–500, no vacío, moderación.
@@ -130,6 +130,7 @@
   - Concurrencia: una de dos publicaciones gana.
 - **Tests**: Playwright API + DB: 201, 409, 422, 501 chars, espacios,
   duplicado y concurrencia.
+- **Evidencia**: `specs/001-muro-24h/evidence/T05-publish-message.md`.
 
 ## T06 — Comentarios
 

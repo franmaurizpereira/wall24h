@@ -1,13 +1,13 @@
 import { Algorithm, hash, verify } from '@node-rs/argon2';
 import { z } from 'zod';
 import { query, withTransaction } from '../db.js';
+import { requireUser } from '../lib/auth.js';
 import { httpError, mapDbError } from '../lib/errors.js';
 import {
   SESSION_COOKIE,
   SESSION_TTL_SECONDS,
   createSession,
   deleteSession,
-  findSessionUser,
 } from '../lib/sessions.js';
 
 const ARGON2_OPTIONS = {
@@ -117,15 +117,7 @@ export default async function authRoutes(app) {
     return { ok: true };
   });
 
-  app.get('/me', async (request, reply) => {
-    const token = request.cookies[SESSION_COOKIE];
-    const user = await findSessionUser(token);
-
-    if (!user) {
-      clearSessionCookie(reply);
-      throw httpError(401, 'not_authenticated', 'No autenticado');
-    }
-
-    return { id: Number(user.id), username: user.username };
+  app.get('/me', { preHandler: requireUser }, async (request) => {
+    return { id: Number(request.user.id), username: request.user.username };
   });
 }
