@@ -6,9 +6,9 @@ comentarios y el más comentado se convierte en el héroe del muro.
 > Repositorio: <https://github.com/franmaurizpereira/wall24h>
 >
 > Estado: **fase 0**, **fase 1 (T01/T02)**, **fase 2 (T03)**, **fase 3
-> (T04-T08)**, **T09**, **T10** y **T11** completadas. La API y la UI cubren
-> muro, detalle, comentarios, auth, publicación, reportes y polling. El
-> siguiente paso es V01, el rediseño visual.
+> (T04-T08)**, **T09-T11** y **V01** completadas. La API y la UI cubren muro,
+> detalle, comentarios, auth, publicación, reportes, polling y el rediseño
+> visual. El siguiente paso es T12 (moderación y hardening).
 
 ## Qué es
 
@@ -34,7 +34,8 @@ comentarios y el más comentado se convierte en el héroe del muro.
 | 4 | ✅ Frontend: shell, muro, héroe, countdown y estados (T09-T11) |
 | 5 | ✅ Detalle, comentarios, reportes y pantallas de auth (T10) |
 | 6 | ✅ Polling, revalidación y pulido de errores (T11) |
-| 7–9 | ⏳ Moderación, tests visuales y despliegue |
+| V01 | ✅ Rediseño visual editorial oscuro |
+| 7–9 | ⏳ Moderación, suite visual con snapshots y despliegue |
 
 Existe hoy:
 
@@ -58,6 +59,8 @@ Existe hoy:
 - Auth modal de login/registro, sesión en cabecera, logout y publicación.
 - Reporte con motivo y feedback de errores 401/403/409/410/422.
 - Polling cada 15 s con pausa por pestaña oculta y aviso si falla un refresco.
+- Rediseño visual editorial oscuro con tokens, responsive 360–1280, foco
+  visible y capturas de evidencia.
 - Toasts accesibles y router mínimo con History API.
 - `Dockerfile`, `docker-compose.yml`, `db/Dockerfile`, `db/init/` y `Caddyfile`.
 - `docker compose` con `db`, `migrate`, `migrate-test`, `app`, `app-test` y `caddy`.
@@ -70,8 +73,8 @@ Existe hoy:
 
 Todavía no existe:
 
-- Rediseño visual de `web/css/style.css` y specs con snapshots (V01).
-- Moderación/endurecimiento final y suite visual completa (T12-T13).
+- Moderación/endurecimiento final y suite visual con snapshots (T12-T13).
+- Documentación final y despliegue (T14).
 
 ## Stack objetivo
 
@@ -180,7 +183,9 @@ npm run test:down
   Vitest añade 4 tests de funciones puras.
 - Los proyectos corren `setup → e2e → api → db`; el test de rate limit de login
   se ejecuta después de E2E para no bloquear el flujo de auth.
-- `test:visual` está configurado; los snapshots llegan con V01.
+- `test:visual` está configurado; las capturas V01 están en
+  `specs/001-muro-24h/evidence/screenshots/` y los snapshots de regresión
+  llegan en T13.
 - Los tests SQL de esquema y `pg_cron` siguen en `psql`, no en Playwright.
 - Evidencia: HTML report, traces y screenshots en `specs/<feature>/evidence/`.
 

@@ -295,7 +295,7 @@
 
 ## V01 — Rediseño visual
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: graphic-designer
 - **Depende de**: T09, T10, T11, `.opencode/design-brief.md` aprobado
 - **RF**: RNF-01

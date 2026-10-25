@@ -46,13 +46,14 @@ Reglas de lectura:
 - **T09 completada**: shell React + Vite + TS, muro público con héroe, grid, countdown por `server_time`, estados de carga/vacío/error, contrato de clases y build de la SPA servido por Fastify.
 - **T10 completada**: detalle con comentarios, auth modal, publicación, reportes, toasts, router mínimo y errores de API mapeados en la UI.
 - **T11 completada**: polling 15 s con pausa por visibilidad, countdown recalibrado, reordenación del héroe, aviso de datos obsoletos y responsive 360–1280.
-- **No existe todavía**: specs visuales con snapshots y el rediseño de `web/css/style.css` (V01); quedan T12-T13.
+- **V01 completada**: rediseño editorial oscuro con acento cálido, tokens, estados, diálogos accesibles, capturas 360/768/1280 y revisión de estilo PASS en los 5 gates.
+- **No existe todavía**: suite visual con snapshots y T12-T13 (moderación, hardening y suite final).
 - **Entorno decidido**: PostgreSQL y app en Docker; el PostgreSQL local del 5432 no se usa. La base de Docker se publica en 5433, la app en 8080 y la app de test en 8081.
 - `docs/` es referencia histórica:
   - `docs/init.sql` y `docs/codigo_base_de_datos_postgres.sql` están obsoletos; **no los uses**.
   - `docs/server.js` es un borrador, no la implementación de producción.
   - `docs/docker-compose.yml` usa una imagen (`cybertecpostgresql/postgresql:16-3`) que no está disponible públicamente.
-- La siguiente tarea es **V01: rediseño visual** con el brief aprobado; después T12-T13.
+- La siguiente tarea es **T12: moderación, rate limit y hardening**.
 - El paquete SDD inicial vive en `specs/001-muro-24h/`.
 
 ### Roadmap de referencia
@@ -63,12 +64,12 @@ Reglas de lectura:
 | 1 | Scaffold, Docker, migraciones, lint, typecheck y base Playwright/Vitest (completada; T01/T02) |
 | 2 | Auth, sesiones en BD, cookies y rate limit (completada; T03) |
 | 3 | API de muro, mensajes, comentarios, reportes y purga (completada; T04-T08) |
-| 4 | Frontend: shell, muro, héroe, countdown y estados (T09-T11 completadas) |
+| 4 | Frontend: shell, muro, héroe, countdown y estados (T09-T11 completadas; V01 de estilo completada) |
 | 5 | Detalle, comentarios, reportes y pantallas de auth (cubiertas por T10) |
 | 6 | Polling, revalidación y pulido de errores (T11 completada) |
-| 7 | Moderación, rate limit y endurecimiento |
-| 8 | Suite Playwright: API, DB, E2E y visual |
-| 9 | Documentación final, diagramas y despliegue |
+| 7 | Moderación, rate limit y endurecimiento (T12 pendiente) |
+| 8 | Suite Playwright: API, DB, E2E y visual (visual con snapshots pendiente) |
+| 9 | Documentación final, diagramas y despliegue (T14 pendiente) |
 
 ## 3. Stack, arquitectura y carpetas
 
@@ -599,7 +600,8 @@ Decidido en el brief visual (aprobado el 2026-10-25):
 - Dirección editorial oscura de alto contraste con acento cálido.
 - Tipografía, densidad, radios, sombras y movimiento quedan como propuesta del
   `graphic-designer` dentro del brief.
-- El rediseño se aplica en V01, después de T11.
+- V01 aplicó el rediseño y pasó la revisión de estilo; las capturas están en
+  `specs/001-muro-24h/evidence/screenshots/`.
 
 Fuera del MVP: verificación de email, recuperación de contraseña, panel de administración, SSE/WebSocket, notificaciones, edición de comentarios e imágenes.
 

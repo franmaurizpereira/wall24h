@@ -3,14 +3,14 @@
 > Documento de referencia. **No es un agente** y no se carga como configuración
 > de OpenCode. Es el brief visual canónico del proyecto.
 
-- **Estado**: aprobado el 2026-10-25 por el usuario
+- **Estado**: aprobado el 2026-10-25 y aplicado en V01
 - **Feature inicial**: `001-muro-24h`
 - **Alcance**: apariencia visual del muro, detalle, auth y estados
 - **Archivo permitido**: `web/css/style.css`
 
 > Dirección aprobada: **editorial oscuro de alto contraste con acento cálido**.
-> El `graphic-designer` puede proponer tipografía, densidad y ajustes concretos
-> dentro de este brief. El rediseño se implementa en V01, después de T10 y T11.
+> Aplicada en `web/css/style.css` y validada por `reviewer-estilo` (PASS en los
+> 5 gates). Las capturas están en `specs/001-muro-24h/evidence/screenshots/`.
 
 ## 1. Personalidad
 

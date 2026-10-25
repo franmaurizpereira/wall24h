@@ -16,9 +16,10 @@
 - T09 completada: shell React + Vite, muro con héroe/grid, countdown por `server_time`, estados y SPA en Docker.
 - T10 completada: detalle, comentarios, auth, publicación, reportes, toasts y router mínimo.
 - T11 completada: polling 15 s, pausa por visibilidad, stale sin perder datos y responsive.
+- V01 completada: rediseño editorial oscuro, tokens, accesibilidad y revisión PASS.
 - Andamiaje SDD creado: `AGENTS.md`, `.opencode/agents/` y `specs/001-muro-24h/`.
 - Brief visual en `.opencode/design-brief.md` aprobado: editorial oscuro con acento cálido.
-- Siguiente paso: V01, rediseño visual en `web/css/style.css`; después T12-T13.
+- Siguiente paso: T12, moderación, rate limit y hardening; después T13-T14.
 
 ## Decisiones importantes
 
