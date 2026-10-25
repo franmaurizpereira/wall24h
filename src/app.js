@@ -11,6 +11,7 @@ import { ApiError, mapDbError } from './lib/errors.js';
 import authRoutes from './routes/auth.js';
 import healthRoutes from './routes/health.js';
 import messageRoutes from './routes/messages.js';
+import reportRoutes from './routes/reports.js';
 import wallRoutes from './routes/wall.js';
 
 const webDist = path.resolve(fileURLToPath(new URL('../web/dist', import.meta.url)));
@@ -64,6 +65,7 @@ export async function buildApp(options = {}) {
   await app.register(authRoutes, { prefix: '/api/auth' });
   await app.register(wallRoutes, { prefix: '/api' });
   await app.register(messageRoutes, { prefix: '/api' });
+  await app.register(reportRoutes, { prefix: '/api' });
 
   if (existsSync(webDist)) {
     await app.register(fastifyStatic, {

@@ -11,10 +11,11 @@
 - T04 completada: `GET /api/wall` y `GET /api/messages/:id` con lectura anónima, orden, héroe y `410`.
 - T05 completada: `POST /api/messages` con validación, moderación, 24 h y 409 de activo/duplicado.
 - T06 completada: `POST /api/messages/:id/comments` con validación, moderación, 403/409/410, contador y concurrencia.
+- T07 completada: `POST /api/messages/:id/report` con `pending`, 403/409/410/422 y cola privada.
 - Andamiaje SDD creado: `AGENTS.md`, `.opencode/agents/` y `specs/001-muro-24h/`.
-- No hay frontend ni reportes todavía.
+- No hay frontend ni verificación end-to-end de purga todavía.
 - Brief visual en `.opencode/design-brief.md`; es un documento, no un agente. Pendiente de aprobación.
-- Siguiente paso: T07, reportes.
+- Siguiente paso: T08, purga y expiración.
 
 ## Decisiones importantes
 
@@ -30,6 +31,7 @@
 - Context7: documentación de librerías; Playwright: verificación visual. Motivo: evitar APIs desactualizadas y validar la UI real.
 - Auth: Argon2id, token de 32 bytes, sha256 en BD, cookie 7 días y rate limit (registro 50/min, login 20/min). Motivo: sesión segura y sin estado en memoria.
 - Comentarios: uno por usuario/mensaje, 1–300, sin auto-comentario, sin vencidos y con moderación. Motivo: ranking justo y abuso controlado.
+- Reportes: uno por usuario/mensaje, sin auto-reporte, sin vencidos y con cola privada. Motivo: moderación sin exposición pública.
 
 ## Errores a evitar
 

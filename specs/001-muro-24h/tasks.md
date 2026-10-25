@@ -151,7 +151,7 @@
 
 ## T07 — Reportes
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T03, T04
 - **RF**: RF-09
@@ -162,6 +162,7 @@
   - Auto-reporte `403`; vencido `410`; duplicado `409`; motivo inválido `422`.
   - No se expone la cola al público.
 - **Tests**: Playwright API: 201, 403, 409, 410, 422.
+- **Evidencia**: `specs/001-muro-24h/evidence/T07-reports.md`.
 
 ## T08 — Purga y expiración
 
