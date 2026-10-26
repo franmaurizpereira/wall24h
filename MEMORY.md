@@ -3,23 +3,13 @@
 > Memoria operativa. Máximo ~50 líneas. No guardar secretos.
 > Si algo se vuelve regla permanente, moverlo a `AGENTS.md`.
 
-## Estado actual (2026-10-25)
+## Estado actual (2026-10-26)
 
 - Fase 0 completada: esquema PostgreSQL, constraints, triggers, purga y tests en `db/`.
 - Fase 1 completada (T01/T02): `package.json`, Fastify base con `/healthz`, Docker Compose (`db`, `app`, `app-test`), migraciones y tests Playwright/Vitest.
 - Fase 2 completada (T03): registro, login, logout, `/me`, sesiones en BD, Argon2id, cookies y rate limit.
-- T04 completada: `GET /api/wall` y `GET /api/messages/:id` con lectura anónima, orden, héroe y `410`.
-- T05 completada: `POST /api/messages` con validación, moderación, 24 h y 409 de activo/duplicado.
-- T06 completada: `POST /api/messages/:id/comments` con validación, moderación, 403/409/410, contador y concurrencia.
-- T07 completada: `POST /api/messages/:id/report` con `pending`, 403/409/410/422 y cola privada.
-- T08 completada: filtro de expiración, purga real con cascada, sesiones y reintento de deadlocks.
-- T09 completada: shell React + Vite, muro con héroe/grid, countdown por `server_time`, estados y SPA en Docker.
-- T10 completada: detalle, comentarios, auth, publicación, reportes, toasts y router mínimo.
-- T11 completada: polling 15 s, pausa por visibilidad, stale sin perder datos y responsive.
-- T12 completada: CSP/Helmet, Origin, rate limit por sesión/IP, moderación y logs seguros.
-- T13 completada: 68 tests Playwright (incluye 3 snapshots visuales) y reporte HTML.
-- T14 completada: README, guía de despliegue, Compose/Caddy y limitaciones.
-- V01 completada: rediseño editorial oscuro, tokens, accesibilidad y revisión PASS.
+- T04-T08 completadas: muro/detalle, publicación, comentarios, reportes, expiración y purga.
+- T09-T14 + V01 completadas: frontend con héroe/countdown, detalle/auth/reportes, polling, CSP/Origin/rate limit, 68 tests Playwright, docs/deploy y rediseño editorial oscuro.
 - Andamiaje SDD creado: `AGENTS.md`, `.opencode/agents/` y `specs/001-muro-24h/`.
 - Brief visual en `.opencode/design-brief.md` aprobado: editorial oscuro con acento cálido.
 - MVP completo; siguiente línea: plan de métricas DORA. No hay CI/CD ni panel de moderación.
