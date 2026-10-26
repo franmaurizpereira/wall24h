@@ -16,6 +16,7 @@ export default async function wallRoutes(app) {
        FROM messages m
        JOIN users u ON u.id = m.user_id
        WHERE m.expires_at > now()
+         AND m.hidden_at IS NULL
        ORDER BY m.comments_count DESC, m.created_at DESC`,
     );
 

@@ -9,6 +9,7 @@ comentarios, reportes, sesiones y purga automática.
 |---|---|
 | `migrations/001_schema.sql` | Extensiones, tablas, constraints, triggers, índices y funciones de purga |
 | `migrations/002_cron.sql` | Jobs de `pg_cron` para purgar mensajes y sesiones |
+| `migrations/003_moderation.sql` | `hidden_at`/`hidden_by` en mensajes y auditoría de reportes; guards de mensajes ocultos |
 | `tests/schema_test.sql` | Pruebas de reglas, constraints, triggers, inmutabilidad y purga |
 | `Dockerfile` | Imagen de PostgreSQL 16 con `pg_cron` |
 | `../scripts/validate-schema.sh` | Validación reproducible del esquema base |
@@ -71,6 +72,11 @@ directa del esquema y de `pg_cron`; no se migran al runner de aplicación.
   longitud y de al menos un carácter no blanco.
 - **No comentar el propio mensaje.**
 - **No comentar ni reportar mensajes vencidos.**
+- **Ocultado por moderación.** `messages.hidden_at` retira el mensaje del muro
+  y del detalle; los guards también bloquean comentarios y reportes con
+  `410 message_gone`. La fila se conserva para auditoría.
+- **Auditoría de reportes.** `reports.reviewed_at` y `reviewed_by` registran
+  la última revisión manual; `status` pasa a `reviewed` o `actioned`.
 - **Un comentario por usuario y mensaje.**
 - **Un reporte por usuario y mensaje; no auto-reportarse.**
 - **`comments_count` denormalizado** y sincronizado con triggers

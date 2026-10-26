@@ -1,7 +1,7 @@
 import { Algorithm, hash, verify } from '@node-rs/argon2';
 import { z } from 'zod';
 import { query, withTransaction } from '../db.js';
-import { requireUser } from '../lib/auth.js';
+import { isAdminUsername, requireUser } from '../lib/auth.js';
 import { httpError, mapDbError } from '../lib/errors.js';
 import {
   SESSION_COOKIE,
@@ -75,7 +75,11 @@ export default async function authRoutes(app) {
       }
 
       setSessionCookie(reply, session.token);
-      return reply.code(201).send({ id: Number(user.id), username: user.username });
+      return reply.code(201).send({
+        id: Number(user.id),
+        username: user.username,
+        is_admin: isAdminUsername(user.username),
+      });
     },
   );
 
@@ -118,6 +122,10 @@ export default async function authRoutes(app) {
   });
 
   app.get('/me', { preHandler: requireUser }, async (request) => {
-    return { id: Number(request.user.id), username: request.user.username };
+    return {
+      id: Number(request.user.id),
+      username: request.user.username,
+      is_admin: isAdminUsername(request.user.username),
+    };
   });
 }

@@ -9,6 +9,7 @@ import Fastify from 'fastify';
 import { ZodError } from 'zod';
 import { ApiError, mapDbError } from './lib/errors.js';
 import { assertAllowedOrigin, safeErrorForLog } from './lib/security.js';
+import adminRoutes from './routes/admin.js';
 import authRoutes from './routes/auth.js';
 import healthRoutes from './routes/health.js';
 import messageRoutes from './routes/messages.js';
@@ -94,6 +95,7 @@ export async function buildApp(options = {}) {
 
   await app.register(healthRoutes);
   await app.register(authRoutes, { prefix: '/api/auth' });
+  await app.register(adminRoutes, { prefix: '/api' });
   await app.register(wallRoutes, { prefix: '/api' });
   await app.register(messageRoutes, { prefix: '/api' });
   await app.register(reportRoutes, { prefix: '/api' });

@@ -90,7 +90,7 @@ export default async function messageRoutes(app) {
               u.username AS author
        FROM messages m
        JOIN users u ON u.id = m.user_id
-       WHERE m.id = $1 AND m.expires_at > now()`,
+       WHERE m.id = $1 AND m.expires_at > now() AND m.hidden_at IS NULL`,
       [id],
     );
 

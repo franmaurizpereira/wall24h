@@ -1,6 +1,13 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { expect, type Page } from '@playwright/test';
-import { baseURL, createUserDirect, dbExec, dbQuery, uniqueUser } from './api';
+import {
+  baseURL,
+  createSessionForUsername,
+  createUserDirect,
+  dbExec,
+  dbQuery,
+  uniqueUser,
+} from './api';
 
 export type UiUser = {
   id: number;
@@ -82,4 +89,21 @@ export async function loginViaUi(
 
   await expect(page.getByTestId('session-user')).toHaveText(`@${credentials.username}`);
   await expect(page.getByTestId('auth-dialog')).not.toBeVisible();
+}
+
+export async function loginAsAdmin(page: Page): Promise<void> {
+  const { context, token } = await createSessionForUsername('admin_test');
+
+  await page.context().addCookies([
+    {
+      name: 'session',
+      value: token,
+      url: baseURL,
+    },
+  ]);
+  await context.dispose();
+
+  await page.goto('/');
+  await expect(page.getByTestId('session-user')).toHaveText('@admin_test');
+  await expect(page.getByTestId('open-admin')).toBeVisible();
 }

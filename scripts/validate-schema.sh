@@ -84,8 +84,14 @@ fi
 
 PSQL=(psql -X -w -v ON_ERROR_STOP=1 -h 127.0.0.1 -p "$PORT" -U "$DB_USER" -d "$DB_NAME")
 
-echo "→ Aplicando db/migrations/001_schema.sql"
-"${PSQL[@]}" -f "$ROOT_DIR/db/migrations/001_schema.sql" >/dev/null
+echo "→ Aplicando migraciones de estructura"
+for migration in "$ROOT_DIR"/db/migrations/*.sql; do
+  if [ "$(basename "$migration")" = "002_cron.sql" ]; then
+    continue
+  fi
+  echo "  - $(basename "$migration")"
+  "${PSQL[@]}" -f "$migration" >/dev/null
+done
 
 echo "→ Ejecutando db/tests/schema_test.sql"
 "${PSQL[@]}" -f "$ROOT_DIR/db/tests/schema_test.sql"

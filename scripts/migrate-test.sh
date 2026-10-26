@@ -18,6 +18,14 @@ psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -q \
 psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -q \
   -c "CREATE DATABASE wall_test;"
 
-psql "$TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -f "$MIGRATIONS_DIR/001_schema.sql"
+# Aplica el esquema y las migraciones de estructura. 002_cron se omite:
+# pg_cron solo se configura en la base wall.
+for migration in "$MIGRATIONS_DIR"/*.sql; do
+  [ -e "$migration" ] || continue
+  if [ "$(basename "$migration")" = "002_cron.sql" ]; then
+    continue
+  fi
+  psql "$TEST_DATABASE_URL" -v ON_ERROR_STOP=1 -f "$migration"
+done
 
 echo "✓ wall_test recreada y esquema aplicado"

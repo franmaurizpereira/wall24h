@@ -33,6 +33,7 @@ export function useRoute() {
 
   return {
     pathname,
+    isAdmin: pathname === '/admin',
     messageId: parseMessageId(pathname),
     navigate,
   };

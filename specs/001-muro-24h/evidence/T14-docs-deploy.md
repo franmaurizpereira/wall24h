@@ -27,10 +27,10 @@ npm run typecheck       → OK
 npm run lint            → OK
 npm run build           → OK
 npm run format:check    → OK
-npm test                → 68 passed
+npm test                → 74 passed
 npm run test:unit       → 6 passed
 npm run test:visual     → 4 passed
-npm run test:all        → OK (test:up + unit + 68 Playwright + test:down)
+npm run test:all        → OK (test:up + unit + 74 Playwright + test:down)
 ./scripts/validate-schema.sh → OK
 ./scripts/validate-cron.sh   → OK (pg_cron purgó el mensaje)
 ```

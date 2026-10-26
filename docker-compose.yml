@@ -76,6 +76,7 @@ services:
       NODE_ENV: ${NODE_ENV:-development}
       TRUST_PROXY: ${TRUST_PROXY:-false}
       APP_ORIGIN: ${APP_ORIGIN:-}
+      ADMIN_USERNAMES: ${ADMIN_USERNAMES:-}
       COOKIE_SECRET: ${COOKIE_SECRET:?set COOKIE_SECRET in .env}
     depends_on:
       db:
@@ -96,6 +97,7 @@ services:
       NODE_ENV: test
       TRUST_PROXY: 'false'
       APP_ORIGIN: ''
+      ADMIN_USERNAMES: ${ADMIN_USERNAMES:-}
       COOKIE_SECRET: ${TEST_COOKIE_SECRET:?set TEST_COOKIE_SECRET in .env}
     depends_on:
       db:

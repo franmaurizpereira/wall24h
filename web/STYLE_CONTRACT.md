@@ -88,4 +88,6 @@ en `web/css/style.css` durante V01. El implementer no diseña ni modifica CSS.
 `detail-back`, `detail-report`, `detail-comments-count`, `comment-list`,
 `comment`, `comments-empty`, `comment-form`, `comment-auth`, `comment-own`,
 `comment-already`, `comment-session-loading`, `comment-text`, `comment-submit`,
-`comment-error`, `toast`, `wall-stale`.
+`comment-error`, `toast`, `wall-stale`, `open-admin`, `admin-panel`,
+`admin-reports`, `admin-report`, `admin-review`, `admin-action`, `admin-hide`,
+`admin-loading`, `admin-empty`, `admin-error`.

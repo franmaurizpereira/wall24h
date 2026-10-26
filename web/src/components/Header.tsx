@@ -6,6 +6,7 @@ type Props = {
   loading: boolean;
   onOpenAuth: () => void;
   onPublish: () => void;
+  onAdmin: () => void;
   onLogout: () => void;
   onRefresh: () => void;
 };
@@ -16,6 +17,7 @@ export function Header({
   loading,
   onOpenAuth,
   onPublish,
+  onAdmin,
   onLogout,
   onRefresh,
 }: Props) {
@@ -43,6 +45,16 @@ export function Header({
         >
           Publicar
         </button>
+        {user?.is_admin ? (
+          <button
+            type="button"
+            className="button button--ghost button--small"
+            onClick={onAdmin}
+            data-testid="open-admin"
+          >
+            Moderación
+          </button>
+        ) : null}
 
         {sessionLoading ? (
           <span className="session__loading" data-testid="session-loading">

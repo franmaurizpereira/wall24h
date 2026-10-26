@@ -49,8 +49,9 @@ Reglas de lectura:
 - **T12 completada**: Helmet con CSP, comprobación de `Origin`, rate limit de escritura por sesión/IP, moderación normalizada y logs sin contenido.
 - **T13 completada**: suite Playwright completa con API/DB/E2E, snapshots visuales 360/768/1280 y reporte HTML.
 - **T14 completada**: README, guía de despliegue, Compose/Caddy de producción, variables y limitaciones.
+- **Feature 002 completada**: panel `/admin` con allowlist `ADMIN_USERNAMES`, reportes pending, estados `reviewed`/`actioned` y soft-hide de mensajes.
 - **V01 completada**: rediseño editorial oscuro con acento cálido, tokens, estados, diálogos accesibles, capturas 360/768/1280 y revisión de estilo PASS en los 5 gates.
-- **No existe todavía**: CI/CD, medición de métricas DORA y panel de moderación.
+- **No existe todavía**: CI/CD, medición de métricas DORA, historial de moderación y auto-ocultado por umbral.
 - **Entorno decidido**: PostgreSQL y app en Docker; el PostgreSQL local del 5432 no se usa. La base de Docker se publica en 5433, la app en 8080 y la app de test en 8081.
 - `docs/` mezcla referencia histórica y guía operativa:
   - `docs/init.sql` y `docs/codigo_base_de_datos_postgres.sql` están obsoletos; **no los uses**.
@@ -58,7 +59,7 @@ Reglas de lectura:
   - `docs/docker-compose.yml` usa una imagen (`cybertecpostgresql/postgresql:16-3`) que no está disponible públicamente.
   - `docs/despliegue.md` es la guía operativa actual.
 - El MVP está completo; la siguiente línea es el plan de métricas DORA.
-- El paquete SDD inicial vive en `specs/001-muro-24h/`.
+- El paquete SDD inicial vive en `specs/001-muro-24h/`; la moderación en `specs/002-moderacion/`.
 
 ### Roadmap de referencia
 
@@ -74,6 +75,8 @@ Reglas de lectura:
 | 7 | Moderación, rate limit y endurecimiento (T12 completada) |
 | 8 | Suite Playwright: API, DB, E2E y visual (T13 completada) |
 | 9 | Documentación final, diagramas y despliegue (T14 completada) |
+| 002 | Panel de moderación, revisión de reportes y soft-hide (completada) |
+| DORA | CI/CD y métricas DORA (pendiente, plan separado) |
 
 ## 3. Stack, arquitectura y carpetas
 
@@ -598,6 +601,8 @@ Decisiones cerradas:
 - PostgreSQL y app en Docker; DB en `localhost:5433`, app en `8080`, app-test en `8081`.
 - `wall` para desarrollo y `wall_test` para tests; `pg_cron` solo en `wall`.
 - Playwright en el host contra `app-test`; Vitest solo unitarios.
+- Moderación: allowlist `ADMIN_USERNAMES` y soft-hide con `hidden_at`; sin
+  auto-ocultado por umbral ni historial de acciones.
 
 Decidido en el brief visual (aprobado el 2026-10-25):
 

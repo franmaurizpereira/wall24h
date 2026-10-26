@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { expect, request as playwrightRequest } from '@playwright/test';
 import type { APIRequestContext } from '@playwright/test';
 import pg from 'pg';
@@ -76,6 +76,49 @@ export async function createSessionContext(prefix: string): Promise<{
     await context.dispose();
     throw error;
   }
+}
+
+/**
+ * Crea una sesión con un username fijo. Se usa para el allowlist de admin en
+ * tests; borra el usuario previo para que el test sea repetible.
+ */
+export async function createSessionForUsername(username: string): Promise<{
+  context: APIRequestContext;
+  user: { id: number; username: string; email: string; password: string };
+  token: string;
+}> {
+  await dbExec('DELETE FROM users WHERE username = $1', [username]);
+
+  const email = `${username}@example.com`;
+  const rows = await dbQuery<{ id: string }>(
+    `INSERT INTO users (username, email, password_hash)
+     VALUES ($1, $2, 'fixture-not-a-real-hash')
+     RETURNING id`,
+    [username, email],
+  );
+  const userId = Number(rows[0].id);
+  const token = randomBytes(32).toString('hex');
+
+  await dbExec(
+    `INSERT INTO sessions (token_hash, user_id)
+     VALUES ($1, $2)`,
+    [createHash('sha256').update(token).digest('hex'), userId],
+  );
+
+  const context = await playwrightRequest.newContext({
+    baseURL,
+    extraHTTPHeaders: { cookie: `session=${token}` },
+  });
+
+  return {
+    context,
+    user: { id: userId, username, email, password: 'password123' },
+    token,
+  };
+}
+
+export function createAdminContext() {
+  return createSessionForUsername('admin_test');
 }
 
 export async function createMessageForUser(

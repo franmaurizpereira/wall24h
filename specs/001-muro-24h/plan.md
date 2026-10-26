@@ -267,6 +267,7 @@ App
 | 7 | Moderación, rate limit y hardening | Completada (T12) |
 | 8 | Suite Playwright: API, DB, E2E y visual | Completada (T13) |
 | 9 | Documentación, diagramas y despliegue | Completada (T14) |
+| 002 | Panel de moderación, reportes y soft-hide | Completada |
 | DORA | CI/CD y métricas DORA | Pendiente (plan separado) |
 
 Los comandos `npm` ya existen y están descritos en `AGENTS.md` sección 8.

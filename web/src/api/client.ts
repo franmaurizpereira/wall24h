@@ -1,6 +1,7 @@
 export type User = {
   id: number;
   username: string;
+  is_admin?: boolean;
 };
 
 export type WallItem = {
@@ -35,6 +36,20 @@ export type MessageDetail = {
   comments: Comment[];
 };
 
+export type AdminReport = {
+  id: number;
+  message_id: number;
+  reporter_id: number;
+  reason: string;
+  status: 'pending' | 'reviewed' | 'actioned';
+  created_at: string;
+  reviewed_at: string | null;
+  message_content: string;
+  message_author: string;
+  message_hidden: boolean;
+  message_expires_at: string;
+};
+
 export type LoginData = {
   username: string;
   password: string;
@@ -51,7 +66,7 @@ type ErrorBody = {
 };
 
 type RequestOptions = {
-  method?: 'GET' | 'POST';
+  method?: 'GET' | 'POST' | 'PATCH';
   body?: unknown;
 };
 
@@ -148,5 +163,27 @@ export function reportMessage(
   return request<{ ok: boolean; status: string }>(`/api/messages/${messageId}/report`, {
     method: 'POST',
     body: { reason },
+  });
+}
+
+export function getAdminReports(
+  status: 'pending' | 'reviewed' | 'actioned' | 'all' = 'pending',
+): Promise<{ items: AdminReport[] }> {
+  return request<{ items: AdminReport[] }>(`/api/admin/reports?status=${status}`);
+}
+
+export function reviewAdminReport(
+  reportId: number,
+  status: 'reviewed' | 'actioned',
+): Promise<{ ok: boolean; status: string; reviewed_at: string }> {
+  return request<{ ok: boolean; status: string; reviewed_at: string }>(
+    `/api/admin/reports/${reportId}`,
+    { method: 'PATCH', body: { status } },
+  );
+}
+
+export function hideAdminMessage(messageId: number): Promise<{ ok: boolean; hidden_at: string }> {
+  return request<{ ok: boolean; hidden_at: string }>(`/api/admin/messages/${messageId}/hide`, {
+    method: 'POST',
   });
 }

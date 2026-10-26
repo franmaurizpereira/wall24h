@@ -9,10 +9,11 @@
 - Fase 1 completada (T01/T02): `package.json`, Fastify base con `/healthz`, Docker Compose (`db`, `app`, `app-test`), migraciones y tests Playwright/Vitest.
 - Fase 2 completada (T03): registro, login, logout, `/me`, sesiones en BD, Argon2id, cookies y rate limit.
 - T04-T08 completadas: muro/detalle, publicación, comentarios, reportes, expiración y purga.
-- T09-T14 + V01 completadas: frontend con héroe/countdown, detalle/auth/reportes, polling, CSP/Origin/rate limit, 68 tests Playwright, docs/deploy y rediseño editorial oscuro.
-- Andamiaje SDD creado: `AGENTS.md`, `.opencode/agents/` y `specs/001-muro-24h/`.
+- T09-T14 + V01 completadas: frontend, detalle/auth/reportes, polling, hardening, docs/deploy y rediseño.
+- Feature 002 completada: panel `/admin`, allowlist `ADMIN_USERNAMES`, reportes y soft-hide.
+- Andamiaje SDD creado: `AGENTS.md`, `.opencode/agents/`, `specs/001-muro-24h/` y `specs/002-moderacion/`.
 - Brief visual en `.opencode/design-brief.md` aprobado: editorial oscuro con acento cálido.
-- MVP completo; siguiente línea: plan de métricas DORA. No hay CI/CD ni panel de moderación.
+- MVP completo; siguiente línea: plan de métricas DORA. No hay CI/CD ni historial de moderación.
 
 ## Decisiones importantes
 
@@ -29,6 +30,7 @@
 - Auth: Argon2id, token de 32 bytes, sha256 en BD, cookie 7 días y rate limit (registro 50/min, login 20/min). Motivo: sesión segura y sin estado en memoria.
 - Comentarios: uno por usuario/mensaje, 1–300, sin auto-comentario, sin vencidos y con moderación. Motivo: ranking justo y abuso controlado.
 - Reportes: uno por usuario/mensaje, sin auto-reporte, sin vencidos y con cola privada. Motivo: moderación sin exposición pública.
+- Moderación: allowlist `ADMIN_USERNAMES` y soft-hide con `hidden_at`. Motivo: panel mínimo sin roles en BD y conservar evidencia.
 
 ## Errores a evitar
 

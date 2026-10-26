@@ -19,7 +19,7 @@
 ## Evidencia
 
 ```text
-npm test        → 68 passed
+npm test        → 74 passed
 npm run test:unit → 6 passed
 npm run test:visual → 4 passed
 ```
@@ -27,8 +27,8 @@ npm run test:visual → 4 passed
 Distribución:
 
 - setup: 1
-- E2E: 20
-- API: 36
+- E2E: 22
+- API: 40
 - DB: 8
 - visual: 3
 
@@ -45,13 +45,15 @@ Cobertura destacada:
 - **Expiración**: `tests/db/expiry.spec.ts` y purga real.
 - **Visual**: snapshots de muro 360/768/1280 con héroe, grid y countdown
   enmascarado para evitar ruido temporal.
+- **Moderación**: panel admin, revisión de reportes, soft-hide y bloqueo de
+  detalle/comentarios/reportes ocultos.
 
 ## Notas
 
 - `baseURL` se toma de `TEST_BASE_URL` y la base de `TEST_DATABASE_URL`
   (`localhost:5433/wall_test`).
 - `npm run test:all` se ejecutó con el perfil `test` de Docker Compose
-  (`db`, `migrate-test`, `app-test`) y terminó con 68 tests Playwright verdes.
+  (`db`, `migrate-test`, `app-test`) y terminó con 74 tests Playwright verdes.
   El servicio `db` permanece levantado porque `test:down` solo elimina
   `migrate-test` y `app-test`.
 - El reporte HTML es autocontenido y se guarda también en `evidence/`.

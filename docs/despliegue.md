@@ -34,6 +34,7 @@ Parte de `.env.example` y rellena valores reales:
 NODE_ENV=production
 TRUST_PROXY=true
 APP_ORIGIN=https://wall24h.tudominio.com
+ADMIN_USERNAMES=admin,moderador
 
 DB_PASSWORD=<password-url-safe>
 COOKIE_SECRET=<secreto-de-32+-caracteres>
@@ -52,6 +53,8 @@ Notas:
 - `TRUST_PROXY=true` es necesario detrás de Caddy para que el rate limit use
   `X-Forwarded-For`.
 - `APP_ORIGIN` debe coincidir exactamente con el origen HTTPS.
+- `ADMIN_USERNAMES` es la allowlist del panel `/admin`; sin ella nadie es
+  administrador. Reinicia la app al cambiarla.
 - Con `NODE_ENV=production`, las cookies son `Secure`; sin HTTPS no funcionará
   el login.
 
@@ -166,30 +169,43 @@ Validación SQL:
 ./scripts/validate-cron.sh
 ```
 
-## 8. Limitaciones
+## 8. Moderación
+
+Los usuarios incluidos en `ADMIN_USERNAMES` ven **Moderación** en la cabecera y
+pueden abrir `/admin`.
+
+- Lista reportes `pending` con mensaje, autor y motivo.
+- **Revisado** y **Accionado** actualizan el estado y guardan auditoría.
+- **Ocultar** hace soft-hide (`hidden_at`): retira el mensaje del muro/detalle,
+  bloquea comentarios/reportes y conserva la evidencia.
+- No hay auto-ocultado por umbral.
+
+Si el panel no está disponible, revisa por SQL:
+
+```sql
+SELECT id, message_id, reporter_id, reason, status, created_at
+FROM reports
+WHERE status = 'pending'
+ORDER BY created_at ASC;
+```
+
+## 9. Limitaciones
 
 - **Una instancia**: el rate limit vive en memoria. Para escalar horizontalmente
   hace falta Redis u otro store compartido.
-- **Sin panel de moderación**: los reportes se revisan con SQL:
-
-  ```sql
-  SELECT id, message_id, reporter_id, reason, status, created_at
-  FROM reports
-  WHERE status = 'pending'
-  ORDER BY created_at ASC;
-  ```
-
+- **Panel mínimo**: no hay historial de acciones, edición de mensajes ni
+  auto-ocultado.
 - **Sin CI/CD**: el despliegue es manual. Las métricas DORA necesitan un
   pipeline e instrumentación aparte.
 - **Sin rollback de migraciones**: backup/restore.
-- **Sin verificación de email, recuperación de contraseña, SSE, edición de
-  mensajes ni auto-ocultado por reportes.**
+- **Sin verificación de email, recuperación de contraseña, SSE ni edición de
+  mensajes.**
 - **Puertos**: `5433`, `8080` y `8081` son de desarrollo/test; no deben
   publicarse en producción.
 - **Backups**: programa `pg_dump` fuera de este repositorio y prueba la
   restauración periódicamente.
 
-## 9. Checklist de producción
+## 10. Checklist de producción
 
 - [ ] DNS apunta al host.
 - [ ] `.env` con secretos fuertes y `NODE_ENV=production`.
@@ -199,6 +215,8 @@ Validación SQL:
 - [ ] `docker compose up -d --build` sin errores.
 - [ ] `/healthz` y `/api/wall` responden.
 - [ ] Registro, login, publicación, comentario y reporte probados.
+- [ ] `ADMIN_USERNAMES` configurado y `/admin` probado con un reporte.
+- [ ] Ocultar un mensaje y comprobar que desaparece del muro y bloquea acciones.
 - [ ] Cabeceras de seguridad y 403 de Origin comprobados.
 - [ ] Backup inicial y restauración de prueba.
 - [ ] Logs sin contenido sensible.

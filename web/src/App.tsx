@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { User } from './api/client';
+import { AdminPanel } from './components/AdminPanel';
 import { AuthDialog } from './components/AuthDialog';
 import { Header } from './components/Header';
 import { MessageDetail } from './components/MessageDetail';
@@ -14,7 +15,7 @@ import { useWall } from './hooks/useWall';
 export function App() {
   const { user, loading: sessionLoading, login, register, logout } = useSession();
   const { data, loading, error, stale, refresh } = useWall();
-  const { messageId, navigate } = useRoute();
+  const { isAdmin, messageId, navigate } = useRoute();
 
   const [authOpen, setAuthOpen] = useState(false);
   const [publishOpen, setPublishOpen] = useState(false);
@@ -100,11 +101,18 @@ export function App() {
         loading={loading}
         onOpenAuth={() => setAuthOpen(true)}
         onPublish={() => (user ? setPublishOpen(true) : setAuthOpen(true))}
+        onAdmin={() => navigate('/admin')}
         onLogout={() => void handleLogout()}
         onRefresh={() => void refresh()}
       />
 
-      {messageId === null ? (
+      {isAdmin ? (
+        <AdminPanel
+          onBack={() => navigate('/')}
+          onMessageHidden={() => void refresh()}
+          onToast={showToast}
+        />
+      ) : messageId === null ? (
         <Wall
           data={data}
           loading={loading}

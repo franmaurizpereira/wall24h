@@ -17,7 +17,7 @@ comentarios y el más comentado se convierte en el héroe del muro.
 - Un solo mensaje activo por usuario y sin contenido activo duplicado.
 - Un comentario por usuario y mensaje; no se puede comentar el propio mensaje.
 - El mensaje con más comentarios es el **héroe**; empate por fecha más reciente.
-- Reportes en cola de moderación, sin panel de administración.
+- Reportes en cola de moderación con panel mínimo en `/admin`.
 - Purga automática con `pg_cron` cada minuto.
 
 ## Arquitectura
@@ -52,7 +52,8 @@ git clone git@github.com:franmaurizpereira/wall24h.git
 cd wall24h
 cp .env.example .env
 
-# Edita .env: DB_PASSWORD, COOKIE_SECRET y TEST_COOKIE_SECRET.
+# Edita .env: DB_PASSWORD, COOKIE_SECRET, TEST_COOKIE_SECRET
+# y ADMIN_USERNAMES si quieres usar /admin.
 docker compose up -d --build
 curl http://localhost:8080/healthz
 ```
@@ -112,6 +113,7 @@ baja. Requiere Docker Compose disponible en el host.
 | `COOKIE_SECRET` | Secreto de cookie de desarrollo. |
 | `TEST_COOKIE_SECRET` | Secreto de cookie de tests. |
 | `APP_ORIGIN` | Origen(es) permitido(s) para mutaciones, separados por coma. |
+| `ADMIN_USERNAMES` | Usernames con acceso al panel `/admin`, separados por coma. Si está vacío, nadie es admin. |
 | `TRUST_PROXY` | `true` detrás de Caddy para usar `X-Forwarded-*`; `false` en directo. |
 | `MODERATION_BANNED_WORDS` | Palabras extra separadas por coma. |
 | `LOG_LEVEL` | Nivel de logs de Fastify (`info` por defecto). |
@@ -120,14 +122,44 @@ baja. Requiere Docker Compose disponible en el host.
 En producción, `APP_ORIGIN` debe ser el origen HTTPS real y `TRUST_PROXY=true`
 si Caddy está delante.
 
+## Moderación
+
+Los reportes se guardan con estado `pending`. Un usuario cuyo username esté en
+`ADMIN_USERNAMES` ve el botón **Moderación** y puede entrar en `/admin`.
+
+```dotenv
+ADMIN_USERNAMES=admin,moderador
+```
+
+- La lista se lee al arrancar la app; reinicia el contenedor si la cambias.
+- Si está vacía, nadie puede acceder al panel.
+- El panel lista reportes pendientes con el mensaje, el autor y el motivo.
+- **Revisado** y **Accionado** actualizan el reporte y guardan `reviewed_at` y
+  `reviewed_by`.
+- **Ocultar** hace soft-hide con `hidden_at`: el mensaje desaparece del muro y
+  del detalle, y ya no admite comentarios ni reportes. La fila y sus reportes se
+  conservan para auditoría.
+- No hay auto-ocultado por umbral: ocultar es una acción manual.
+
+Para moderar por SQL, si hiciera falta:
+
+```sql
+SELECT id, message_id, reporter_id, reason, status, created_at
+FROM reports
+WHERE status = 'pending'
+ORDER BY created_at ASC;
+```
+
 ## Migraciones
 
 `db/migrations/001_schema.sql` es la fuente de verdad del esquema;
-`db/migrations/002_cron.sql` registra los jobs de purga.
+`002_cron.sql` registra los jobs de purga y `003_moderation.sql` añade
+`hidden_at`/`hidden_by` y la auditoría de reportes.
 
-- `docker compose up -d` ejecuta `migrate` y aplica esquema + cron a `wall`.
-- `migrate-test` **recrea** `wall_test` en cada ejecución y aplica solo el
-  esquema; no programa cron.
+- `docker compose up -d` ejecuta `migrate` y aplica todas las migraciones a
+  `wall`.
+- `migrate-test` **recrea** `wall_test` en cada ejecución y aplica las
+  migraciones de estructura; omite `002_cron.sql`.
 - `npm run db:migrate` y `npm run db:migrate:test` ejecutan los mismos scripts
   desde el host usando `DATABASE_URL` y `TEST_DATABASE_URL`.
 - No hay migraciones “down”. Antes de una migración en producción:
@@ -152,7 +184,7 @@ npm run test:down
 
 - Playwright corre en el host contra `app-test` (`http://localhost:8081`) y
   `wall_test` (`localhost:5433`).
-- Suite actual: **68 tests Playwright** (setup 1, E2E 20, API 36, DB 8, visual 3)
+- Suite actual: **74 tests Playwright** (setup 1, E2E 22, API 40, DB 8, visual 3)
   y **6 tests unitarios**.
 - Orden: `setup → e2e → api → db → visual`; el rate limit de login se prueba
   después de E2E para no bloquear el flujo de auth.
@@ -205,9 +237,12 @@ Guía ampliada: [`docs/despliegue.md`](docs/despliegue.md).
 
 ### Limitaciones conocidas
 
-- Rate limit en memoria por instancia. Con varias réplicas hace falta Redis u
+- El rate limit es en memoria por instancia. Con varias réplicas hace falta Redis u
   otro store compartido.
-- No hay panel de moderación; los reportes se consultan por SQL:
+- El panel de moderación es mínimo: lista pendientes, permite marcar
+  `reviewed`/`actioned` y ocultar con `hidden_at`. No hay historial de acciones
+  ni edición de mensajes.
+- Los reportes se pueden revisar también por SQL si hace falta:
 
   ```sql
   SELECT id, message_id, reporter_id, reason, status, created_at
@@ -217,7 +252,7 @@ Guía ampliada: [`docs/despliegue.md`](docs/despliegue.md).
   ```
 
 - No hay verificación de email, recuperación de contraseña, edición/borrado de
-  mensajes, SSE/WebSocket ni auto-ocultado por reportes.
+  mensajes, SSE/WebSocket ni auto-ocultado automático por umbral de reportes.
 - `NODE_ENV=production` usa cookies `Secure`: la app debe servirse por HTTPS.
 - Las migraciones no tienen rollback automático; requiere backup/restore.
 - El `Caddyfile` de producción es manual; no hay CI/CD ni métricas DORA
@@ -298,6 +333,7 @@ wall24h/
 | 8 | Suite Playwright: API, DB, E2E y visual | ✅ |
 | 9 | Documentación, diagramas y despliegue | ✅ |
 | V01 | Rediseño visual editorial oscuro | ✅ |
+| Moderación | Panel `/admin`, revisión de reportes y soft-hide | ✅ |
 | DORA | Medición y optimización de métricas DORA | ⏳ plan separado |
 
 ## Documentación
