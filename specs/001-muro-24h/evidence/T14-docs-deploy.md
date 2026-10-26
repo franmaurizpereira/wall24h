@@ -30,6 +30,7 @@ npm run format:check    → OK
 npm test                → 68 passed
 npm run test:unit       → 6 passed
 npm run test:visual     → 4 passed
+npm run test:all        → OK (test:up + unit + 68 Playwright + test:down)
 ./scripts/validate-schema.sh → OK
 ./scripts/validate-cron.sh   → OK (pg_cron purgó el mensaje)
 ```
@@ -43,9 +44,12 @@ python3 yaml.safe_load(docker-compose.yml)
 
 ## Notas
 
-- `npm run test:all` no se ejecutó en este entorno porque no hay Docker
-  Compose; la suite se ejecutó contra PostgreSQL 16 real y la app en el puerto
-  3000. El comando queda documentado para hosts con Compose.
+- `npm run test:all` se ejecutó con Docker Compose: levantó `db`,
+  `migrate-test` y `app-test`, ejecutó Vitest y los 68 tests Playwright, y
+  ejecutó `test:down`. El servicio `db` queda levantado por diseño de
+  `test:down`.
+- El host no tenía `.env`; se pasaron las variables de test inline. Para uso
+  normal, copia `.env.example` a `.env`.
 - No hay CI/CD ni métricas DORA; se dejó un plan separado.
 - Producción requiere `NODE_ENV=production`, `TRUST_PROXY=true` detrás de
   Caddy y `APP_ORIGIN` con el dominio HTTPS.

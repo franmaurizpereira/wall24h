@@ -50,7 +50,8 @@ Cobertura destacada:
 
 - `baseURL` se toma de `TEST_BASE_URL` y la base de `TEST_DATABASE_URL`
   (`localhost:5433/wall_test`).
-- El perfil `test` de Docker Compose está documentado en T14; en este entorno
-  solo hay `podman`, así que la suite se ejecutó contra PostgreSQL 16 real y
-  la app sirviendo `web/dist` en el puerto 3000.
+- `npm run test:all` se ejecutó con el perfil `test` de Docker Compose
+  (`db`, `migrate-test`, `app-test`) y terminó con 68 tests Playwright verdes.
+  El servicio `db` permanece levantado porque `test:down` solo elimina
+  `migrate-test` y `app-test`.
 - El reporte HTML es autocontenido y se guarda también en `evidence/`.
