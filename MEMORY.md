@@ -16,10 +16,13 @@
 - T09 completada: shell React + Vite, muro con héroe/grid, countdown por `server_time`, estados y SPA en Docker.
 - T10 completada: detalle, comentarios, auth, publicación, reportes, toasts y router mínimo.
 - T11 completada: polling 15 s, pausa por visibilidad, stale sin perder datos y responsive.
+- T12 completada: CSP/Helmet, Origin, rate limit por sesión/IP, moderación y logs seguros.
+- T13 completada: 68 tests Playwright (incluye 3 snapshots visuales) y reporte HTML.
+- T14 completada: README, guía de despliegue, Compose/Caddy y limitaciones.
 - V01 completada: rediseño editorial oscuro, tokens, accesibilidad y revisión PASS.
 - Andamiaje SDD creado: `AGENTS.md`, `.opencode/agents/` y `specs/001-muro-24h/`.
 - Brief visual en `.opencode/design-brief.md` aprobado: editorial oscuro con acento cálido.
-- Siguiente paso: T12, moderación, rate limit y hardening; después T13-T14.
+- MVP completo; siguiente línea: plan de métricas DORA. No hay CI/CD ni panel de moderación.
 
 ## Decisiones importantes
 

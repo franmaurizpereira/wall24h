@@ -5,151 +5,163 @@ comentarios y el más comentado se convierte en el héroe del muro.
 
 > Repositorio: <https://github.com/franmaurizpereira/wall24h>
 >
-> Estado: **fase 0**, **fase 1 (T01/T02)**, **fase 2 (T03)**, **fase 3
-> (T04-T08)**, **T09-T11** y **V01** completadas. La API y la UI cubren muro,
-> detalle, comentarios, auth, publicación, reportes, polling y el rediseño
-> visual. El siguiente paso es T12 (moderación y hardening).
+> Estado: **MVP completo** (T00-T14 + V01). La API, la SPA, el polling, el
+> hardening y la suite Playwright están implementados. La medición de métricas
+> DORA queda como siguiente línea de trabajo, fuera del MVP.
 
 ## Qué es
 
-- La lectura del muro es pública; publicar, comentar y reportar requiere sesión.
+- Lectura pública; publicar, comentar y reportar requiere sesión.
 - Mensajes de solo texto, 1–500 caracteres.
 - Vida exacta de 24 horas; después desaparecen del muro y la API responde `410`.
-- Un solo mensaje activo por usuario.
-- Sin contenido duplicado mientras ambos mensajes estén activos.
+- Un solo mensaje activo por usuario y sin contenido activo duplicado.
 - Un comentario por usuario y mensaje; no se puede comentar el propio mensaje.
-- El mensaje con más comentarios se muestra como **héroe**; el ranking es
-  dinámico y los empates se resuelven por fecha.
-- Reportes en cola de moderación.
+- El mensaje con más comentarios es el **héroe**; empate por fecha más reciente.
+- Reportes en cola de moderación, sin panel de administración.
 - Purga automática con `pg_cron` cada minuto.
 
-## Estado actual
+## Arquitectura
 
-| Fase | Estado |
-|---|---|
-| 0 | ✅ Esquema PostgreSQL, constraints, triggers, purga y tests |
-| 1 | ✅ Scaffold, Docker, migraciones, lint, typecheck, Playwright/Vitest y salud |
-| 2 | ✅ Auth, sesiones en BD, cookies y rate limit |
-| 3 | ✅ API del muro, mensajes, comentarios, reportes y purga (T04-T08) |
-| 4 | ✅ Frontend: shell, muro, héroe, countdown y estados (T09-T11) |
-| 5 | ✅ Detalle, comentarios, reportes y pantallas de auth (T10) |
-| 6 | ✅ Polling, revalidación y pulido de errores (T11) |
-| V01 | ✅ Rediseño visual editorial oscuro |
-| 7–9 | ⏳ Moderación, suite visual con snapshots y despliegue |
+```mermaid
+flowchart LR
+    U[Navegador] -->|80/443| C[Caddy]
+    C -->|app:3000| A[Fastify 5]
+    A -->|/api| P[(PostgreSQL 16\nwall)]
+    A -->|estático| W[React + Vite\nweb/dist]
+    CR[pg_cron] -->|purga cada minuto| P
+    T[Playwright] -->|8081| AT[app-test]
+    AT -->|5433| PT[(wall_test)]
+```
 
-Existe hoy:
-
-- `package.json`, `package-lock.json`, TS/ESLint/Prettier y scripts.
-- `src/` con Fastify, `/healthz`, pool de PostgreSQL y manejo de errores.
-- Auth completo: registro, login, logout, `/me`, Argon2id, sesiones y cookies.
-- Lectura pública: `GET /api/wall` y `GET /api/messages/:id`, con héroe,
-  `server_time`, comentarios y `410` para vencidos.
-- Publicación autenticada: `POST /api/messages`, con validación, moderación,
-  24 h y 409 de activo/duplicado.
-- Comentarios: `POST /api/messages/:id/comments`, uno por usuario/mensaje,
-  con validación, moderación y 403/409/410.
-- Reportes: `POST /api/messages/:id/report`, `pending`, 403/409/410 y cola
-  privada.
-- Expiración: filtro en API, purga real, cascada y purga de sesiones.
-- Reintento de inserts ante deadlocks transitorios.
-- Frontend React + Vite + TypeScript en `web/`: muro público, héroe, grid,
-  contador de comentarios, countdown por `server_time` y estados de
-  carga/vacío/error. La SPA se compila y se sirve desde Fastify.
-- Detalle `/messages/:id` con comentarios, formulario, reporte y `410`.
-- Auth modal de login/registro, sesión en cabecera, logout y publicación.
-- Reporte con motivo y feedback de errores 401/403/409/410/422.
-- Polling cada 15 s con pausa por pestaña oculta y aviso si falla un refresco.
-- Rediseño visual editorial oscuro con tokens, responsive 360–1280, foco
-  visible y capturas de evidencia.
-- Toasts accesibles y router mínimo con History API.
-- `Dockerfile`, `docker-compose.yml`, `db/Dockerfile`, `db/init/` y `Caddyfile`.
-- `docker compose` con `db`, `migrate`, `migrate-test`, `app`, `app-test` y `caddy`.
-- `playwright.config.ts`, `vitest.config.ts` y tests de salud, auth, muro,
-  publicación, comentarios, reportes, expiración, DB y E2E del muro.
-- `db/migrations/001_schema.sql` y `db/migrations/002_cron.sql`.
-- `db/tests/schema_test.sql` y scripts de validación real.
-- `AGENTS.md`, los agentes SDD y `specs/001-muro-24h/`.
-- Documentación y diagramas en `docs/`.
-
-Todavía no existe:
-
-- Moderación/endurecimiento final y suite visual con snapshots (T12-T13).
-- Documentación final y despliegue (T14).
-
-## Stack objetivo
-
-- **Backend**: Node.js 22, Fastify 5, PostgreSQL 16, `pg`, Zod, Argon2.
-- **Frontend**: React + Vite + TypeScript.
-- **Estilos**: CSS plano centralizado en `web/css/style.css`.
+- **Backend**: Node.js 22, Fastify 5, `pg`, Zod, Argon2, Helmet y rate limit.
+- **Frontend**: React 19 + Vite + TypeScript; CSS plano en `web/css/style.css`.
 - **Base de datos**: PostgreSQL 16 con `pgcrypto`, `citext`, `btree_gist` y
   `pg_cron`.
-- **Infraestructura**: Docker Compose + Caddy.
-- **Testing**: Playwright para API, DB, E2E y visual; Vitest solo para funciones
-  puras.
+- **Infraestructura**: Docker Compose con `db`, `migrate`, `app`, `app-test`,
+  `migrate-test` y `caddy`.
+- **Testing**: Playwright para API, DB, E2E y visual; Vitest para funciones
+  puras; SQL puro para esquema y `pg_cron`.
 
 ## Arranque rápido
 
+Requisitos: Docker con Compose v2, Git y Node.js 22 (solo para tests/scripts
+del host).
+
 ```sh
+git clone git@github.com:franmaurizpereira/wall24h.git
+cd wall24h
 cp .env.example .env
-# Edita DB_PASSWORD, COOKIE_SECRET y TEST_COOKIE_SECRET.
+
+# Edita .env: DB_PASSWORD, COOKIE_SECRET y TEST_COOKIE_SECRET.
 docker compose up -d --build
 curl http://localhost:8080/healthz
 ```
 
-La app sirve la SPA en `/` y expone `/healthz`, `/api/auth/*`, `/api/wall`,
-`/api/messages`, `/api/messages/:id`, `/api/messages/:id/comments` y
-`/api/messages/:id/report`.
+Abre `http://localhost:8080`. La SPA se sirve desde Fastify y las rutas del
+cliente (`/messages/:id`) usan el fallback de `index.html`.
 
 Para desarrollo del frontend con recarga en caliente:
 
 ```sh
+npm install
 npm run dev       # API en http://localhost:3000
 npm run dev:web   # Vite en http://localhost:5173 (proxy /api → 8080)
 ```
 
-## Docker
+## Docker y puertos
 
-| Servicio | Puerto host | Base |
+| Servicio | Puerto host | Base / función |
 |---|---|---|
 | `db` | `5433` | `wall` (desarrollo) y `wall_test` (tests) |
-| `app` | `8080` | `wall` |
-| `app-test` | `8081` | `wall_test` |
-| `caddy` | `80/443` | reverse proxy de `app` |
+| `migrate` | — | Aplica esquema y cron a `wall` |
+| `migrate-test` | — | Recrea `wall_test` y aplica el esquema |
+| `app` | `8080` | App principal con `wall` |
+| `app-test` | `8081` | App de tests con `wall_test` |
+| `caddy` | `80/443` | Reverse proxy y TLS |
 
-- El PostgreSQL local del `5432` **no se usa** en este proyecto.
-- `pg_cron` solo apunta a `wall`.
-- Dentro de Docker, la app usa `db:5432`; desde el host se usa
-  `localhost:5433`.
-- `wall_test` no ejecuta cron; las pruebas de purga llaman directamente a
-  `purge_expired_messages()`.
+- El PostgreSQL local del `5432` no se usa en este proyecto.
+- Dentro de Docker, la app usa `db:5432`; desde el host, `localhost:5433`.
+- `pg_cron` solo apunta a `wall`; `wall_test` prueba las funciones de purga
+  directamente.
+- `app` y `app-test` usan la misma imagen multi-stage; incluye la SPA compilada.
+
+### Perfil de test
 
 ```sh
-docker compose up -d --build          # db + migrate + app + caddy
-npm run test:up                       # db + migrate-test + app-test
+docker compose --profile test up -d     # db + migrate-test + app-test
+npm test                                # Playwright completo
 npm run test:down
 ```
 
-## Base de datos
+El atajo `npm run test:all` levanta el perfil, ejecuta Vitest y Playwright y lo
+baja. Requiere Docker Compose disponible en el host.
 
-El esquema está en `db/migrations/001_schema.sql` y documentado en
-`db/README.md`.
+## Variables de entorno
 
-Reglas implementadas:
+| Variable | Uso |
+|---|---|
+| `NODE_ENV` | `development`, `test` o `production`. En producción activa cookies `Secure` y CSP con upgrade. |
+| `PORT` | Puerto interno de Fastify; por defecto `3000`. |
+| `POSTGRES_PORT` | Puerto host de PostgreSQL; por defecto `5433`. |
+| `APP_PORT` | Puerto host de la app; por defecto `8080`. |
+| `APP_TEST_PORT` | Puerto host de `app-test`; por defecto `8081`. |
+| `TEST_BASE_URL` | Base de Playwright; por defecto `http://localhost:8081`. |
+| `DB_PASSWORD` | Password del usuario `wall`; solo caracteres URL-safe. |
+| `DATABASE_URL` | Conexión host a `wall` (`localhost:5433`). |
+| `TEST_DATABASE_URL` | Conexión host a `wall_test`; nunca producción. |
+| `COOKIE_SECRET` | Secreto de cookie de desarrollo. |
+| `TEST_COOKIE_SECRET` | Secreto de cookie de tests. |
+| `APP_ORIGIN` | Origen(es) permitido(s) para mutaciones, separados por coma. |
+| `TRUST_PROXY` | `true` detrás de Caddy para usar `X-Forwarded-*`; `false` en directo. |
+| `MODERATION_BANNED_WORDS` | Palabras extra separadas por coma. |
+| `LOG_LEVEL` | Nivel de logs de Fastify (`info` por defecto). |
 
-- Un mensaje activo por usuario mediante una `EXCLUDE USING gist` sobre
-  intervalos. No se usan índices parciales con `now()` porque PostgreSQL exige
-  predicados `IMMUTABLE`.
-- Sin contenido activo duplicado: `content_hash` generado con
-  `normalize_hash(content)` y exclusion constraint por intervalos.
-- `expires_at = created_at + 24h`, fijado por trigger y protegido contra updates.
-- `comments_count` sincronizado con triggers.
-- Un comentario por usuario y mensaje.
-- Un reporte por usuario y mensaje; no auto-reporte.
-- No se comenta ni se reporta un mensaje vencido.
-- Purga en cascada de mensajes, comentarios y reportes.
-- Sesiones en base de datos con token hasheado (sha256).
+`.env` no se versiona. Usa `.env.example` como plantilla y no subas secretos.
+En producción, `APP_ORIGIN` debe ser el origen HTTPS real y `TRUST_PROXY=true`
+si Caddy está delante.
 
-## Validar la base de datos
+## Migraciones
+
+`db/migrations/001_schema.sql` es la fuente de verdad del esquema;
+`db/migrations/002_cron.sql` registra los jobs de purga.
+
+- `docker compose up -d` ejecuta `migrate` y aplica esquema + cron a `wall`.
+- `migrate-test` **recrea** `wall_test` en cada ejecución y aplica solo el
+  esquema; no programa cron.
+- `npm run db:migrate` y `npm run db:migrate:test` ejecutan los mismos scripts
+  desde el host usando `DATABASE_URL` y `TEST_DATABASE_URL`.
+- No hay migraciones “down”. Antes de una migración en producción:
+  1. Haz backup.
+  2. Aplica `migrate`.
+  3. Comprueba `/healthz` y los logs.
+  4. Si falla, restaura el backup y vuelve a la imagen anterior.
+
+## Testing
+
+```sh
+npm test              # Playwright: setup + e2e + api + db + visual
+npm run test:api      # /healthz + auth + muro + mensajes + comentarios + reportes + hardening
+npm run test:db       # esquema, constraints, concurrencia y expiración
+npm run test:e2e      # muro, auth, detalle, publicación, reportes y polling
+npm run test:visual   # snapshots 360/768/1280
+npm run test:unit     # Vitest: formatos y logs seguros
+npm run test:all      # test:up + unit + Playwright + test:down
+npm run test:up
+npm run test:down
+```
+
+- Playwright corre en el host contra `app-test` (`http://localhost:8081`) y
+  `wall_test` (`localhost:5433`).
+- Suite actual: **68 tests Playwright** (setup 1, E2E 20, API 36, DB 8, visual 3)
+  y **6 tests unitarios**.
+- Orden: `setup → e2e → api → db → visual`; el rate limit de login se prueba
+  después de E2E para no bloquear el flujo de auth.
+- Snapshots en `tests/visual/wall.spec.ts-snapshots/`; capturas editoriales en
+  `specs/001-muro-24h/evidence/screenshots/`.
+- Evidencia: `specs/001-muro-24h/evidence/`, incluido
+  `playwright-report/index.html`.
+
+### Validar la base de datos
 
 Requiere `podman` o `docker` y el cliente `psql`:
 
@@ -158,47 +170,58 @@ Requiere `podman` o `docker` y el cliente `psql`:
 ./scripts/validate-cron.sh     # pg_cron real (hasta ~75 s)
 ```
 
-`validate-schema.sh` crea una base desechable con PostgreSQL 16.
-`validate-cron.sh` construye una imagen local con `postgres:16` +
-`postgresql-16-cron` y comprueba que el job borra un mensaje vencido.
+## Despliegue
 
-## Testing
+Guía ampliada: [`docs/despliegue.md`](docs/despliegue.md).
 
-Tests disponibles:
+1. DNS del dominio apuntando al host.
+2. `.env` de producción:
 
-```sh
-npm test              # Playwright: setup + e2e + api + db
-npm run test:api      # /healthz + auth + muro + mensajes + comentarios + reportes
-npm run test:db       # esquema, constraints y expiración en wall_test
-npm run test:e2e      # muro, auth, detalle, publicación, reportes y polling
-npm run test:unit     # Vitest: formatComments y formatCountdown
-npm run test:all      # test:up + unit + Playwright + test:down
-npm run test:up
-npm run test:down
-```
+   ```sh
+   NODE_ENV=production
+   TRUST_PROXY=true
+   APP_ORIGIN=https://wall24h.tudominio.com
+   COOKIE_SECRET=<secreto-de-32+-caracteres>
+   DB_PASSWORD=<password-url-safe>
+   ```
 
-- Playwright corre en el host contra `app-test` (`http://localhost:8081`) y
-  `wall_test` (`localhost:5433`).
-- La suite actual tiene 60 tests Playwright: setup, 20 E2E, 31 de API y 8 de DB.
-  Vitest añade 4 tests de funciones puras.
-- Los proyectos corren `setup → e2e → api → db`; el test de rate limit de login
-  se ejecuta después de E2E para no bloquear el flujo de auth.
-- `test:visual` está configurado; las capturas V01 están en
-  `specs/001-muro-24h/evidence/screenshots/` y los snapshots de regresión
-  llegan en T13.
-- Los tests SQL de esquema y `pg_cron` siguen en `psql`, no en Playwright.
-- Evidencia: HTML report, traces y screenshots en `specs/<feature>/evidence/`.
+3. En `Caddyfile`, comentar el bloque `:80` y activar el dominio de
+   producción. Caddy obtiene el certificado automáticamente.
+4. Abrir solo `80/443` en el firewall. No expongas públicamente `8080`,
+   `8081` ni `5433`.
+5. Desplegar:
 
-## Variables de entorno
+   ```sh
+   docker compose up -d --build
+   curl https://wall24h.tudominio.com/healthz
+   docker compose logs -f app
+   ```
 
-Copia `.env.example` a `.env` y rellena los valores:
+6. Backup antes de migrar:
 
-- `DB_PASSWORD`: password del usuario `wall` dentro del contenedor PostgreSQL.
-- `COOKIE_SECRET` y `TEST_COOKIE_SECRET`: secretos de 32+ caracteres.
-- `DATABASE_URL` y `TEST_DATABASE_URL`: conexiones desde el host.
-- `POSTGRES_PORT`, `APP_PORT`, `APP_TEST_PORT`, `TEST_BASE_URL`.
+   ```sh
+   docker compose exec -T db pg_dump -U wall -d wall -Fc > backup-wall.dump
+   ```
 
-`.env` no se versiona. Nunca subas secretos al repositorio.
+### Limitaciones conocidas
+
+- Rate limit en memoria por instancia. Con varias réplicas hace falta Redis u
+  otro store compartido.
+- No hay panel de moderación; los reportes se consultan por SQL:
+
+  ```sql
+  SELECT id, message_id, reporter_id, reason, status, created_at
+  FROM reports
+  WHERE status = 'pending'
+  ORDER BY created_at ASC;
+  ```
+
+- No hay verificación de email, recuperación de contraseña, edición/borrado de
+  mensajes, SSE/WebSocket ni auto-ocultado por reportes.
+- `NODE_ENV=production` usa cookies `Secure`: la app debe servirse por HTTPS.
+- Las migraciones no tienen rollback automático; requiere backup/restore.
+- El `Caddyfile` de producción es manual; no hay CI/CD ni métricas DORA
+  automatizadas todavía.
 
 ## Estructura
 
@@ -217,7 +240,6 @@ wall24h/
 ├── .prettierrc
 ├── .env.example
 ├── .gitignore
-├── opencode.json
 ├── Dockerfile
 ├── docker-compose.yml
 ├── Caddyfile
@@ -261,46 +283,22 @@ wall24h/
 └── docs/
 ```
 
-La SPA vive en `web/`; `vite.config.ts` compila a `web/dist` y Fastify la
-sirve con fallback para rutas del cliente. `web/css/style.css` se estiliza en
-V01.
-
-## Flujo SDD
-
-El proyecto usa Spec-Driven Development con seis agentes:
-
-| Agente | Rol |
-|---|---|
-| `coordinator` | Orquesta el flujo y transmite contexto |
-| `planner` | Redacta spec, plan, tareas y brief visual |
-| `reviewer` | Revisa la spec y valida la implementación RF por RF |
-| `implementer` | Implementa una tarea aprobada, con tests primero |
-| `graphic-designer` | Rediseña solo `web/css/style.css` |
-| `reviewer-estilo` | Valida integridad, regresión, estética, accesibilidad y limpieza |
-
-Artefactos en `specs/<feature>/`:
-
-```text
-spec.md
-plan.md
-tasks.md
-evidence/
-```
-
 ## Roadmap
 
-| Fase | Objetivo |
-|---|---|
-| 0 | Esquema PostgreSQL, constraints, triggers y purga (completada) |
-| 1 | Scaffold, Docker, migraciones, lint, typecheck, Playwright/Vitest y salud (completada) |
-| 2 | Auth, sesiones en BD, cookies y rate limit |
-| 3 | API de muro, mensajes, comentarios y reportes |
-| 4 | Frontend: shell, muro, héroe y countdown |
-| 5 | Detalle, comentarios, reportes y auth |
-| 6 | Polling, errores y pulido |
-| 7 | Moderación, rate limit y hardening |
-| 8 | Suite Playwright: API, DB, E2E y visual |
-| 9 | Documentación final, diagramas y despliegue |
+| Fase | Objetivo | Estado |
+|---|---|---|
+| 0 | Esquema PostgreSQL, constraints, triggers y purga | ✅ |
+| 1 | Scaffold, Docker, migraciones, lint, typecheck y base de tests | ✅ |
+| 2 | Auth, sesiones en BD, cookies y rate limit | ✅ |
+| 3 | API de muro, mensajes, comentarios, reportes y purga | ✅ |
+| 4 | Frontend: shell, muro, héroe, countdown y estados | ✅ |
+| 5 | Detalle, comentarios, reportes y auth | ✅ |
+| 6 | Polling, revalidación y pulido | ✅ |
+| 7 | Moderación, rate limit y hardening | ✅ |
+| 8 | Suite Playwright: API, DB, E2E y visual | ✅ |
+| 9 | Documentación, diagramas y despliegue | ✅ |
+| V01 | Rediseño visual editorial oscuro | ✅ |
+| DORA | Medición y optimización de métricas DORA | ⏳ plan separado |
 
 ## Documentación
 
@@ -308,21 +306,14 @@ evidence/
 - `MEMORY.md`: estado operativo y decisiones recientes.
 - `specs/001-muro-24h/`: spec, plan, tareas y evidencias.
 - `db/README.md`: esquema, reglas y códigos de error.
-- `docs/`: estructura original, diagramas y borradores.
-
-## Herramientas de desarrollo
-
-- **Context7**: documentación actualizada de librerías vía MCP. Está configurado
-  en `opencode.json`; usa `resolve-library-id` y `query-docs` antes de
-  implementar o actualizar una dependencia.
-- **Playwright MCP**: verificación visual, capturas y comprobaciones de la UI.
-- **OpenCode SDD**: `AGENTS.md`, agentes y `specs/001-muro-24h/`.
+- `docs/despliegue.md`: guía operativa de producción.
+- `docs/`: contexto histórico y diagramas originales; no es fuente de código.
 
 ## Seguridad
 
-- Contraseñas con Argon2id.
-- Sesiones con token de 32 bytes; en BD solo sha256.
+- Contraseñas con Argon2id; sesiones de 32 bytes con sha256 en BD.
 - Cookies `HttpOnly`, `SameSite=Lax` y `Secure` en producción.
-- Zod en los bordes, SQL parametrizado y rate limit.
-- Sin contenido de mensajes, tokens ni contraseñas en logs.
+- CSP estricta con Helmet, `Origin` en mutaciones y rate limit por sesión/IP.
+- Zod en los bordes, SQL parametrizado y moderación normalizada.
+- Logs sin contenido, tokens, contraseñas ni parámetros SQL.
 - Sin secretos en el repositorio; `.env` está ignorado.

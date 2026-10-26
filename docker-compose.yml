@@ -73,7 +73,9 @@ services:
     environment:
       DATABASE_URL: postgresql://wall:${DB_PASSWORD:?set DB_PASSWORD in .env}@db:5432/wall
       PORT: 3000
-      NODE_ENV: development
+      NODE_ENV: ${NODE_ENV:-development}
+      TRUST_PROXY: ${TRUST_PROXY:-false}
+      APP_ORIGIN: ${APP_ORIGIN:-}
       COOKIE_SECRET: ${COOKIE_SECRET:?set COOKIE_SECRET in .env}
     depends_on:
       db:
@@ -92,6 +94,8 @@ services:
       DATABASE_URL: postgresql://wall:${DB_PASSWORD:?set DB_PASSWORD in .env}@db:5432/wall_test
       PORT: 3000
       NODE_ENV: test
+      TRUST_PROXY: 'false'
+      APP_ORIGIN: ''
       COOKIE_SECRET: ${TEST_COOKIE_SECRET:?set TEST_COOKIE_SECRET in .env}
     depends_on:
       db:

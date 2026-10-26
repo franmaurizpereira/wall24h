@@ -46,14 +46,18 @@ Reglas de lectura:
 - **T09 completada**: shell React + Vite + TS, muro público con héroe, grid, countdown por `server_time`, estados de carga/vacío/error, contrato de clases y build de la SPA servido por Fastify.
 - **T10 completada**: detalle con comentarios, auth modal, publicación, reportes, toasts, router mínimo y errores de API mapeados en la UI.
 - **T11 completada**: polling 15 s con pausa por visibilidad, countdown recalibrado, reordenación del héroe, aviso de datos obsoletos y responsive 360–1280.
+- **T12 completada**: Helmet con CSP, comprobación de `Origin`, rate limit de escritura por sesión/IP, moderación normalizada y logs sin contenido.
+- **T13 completada**: suite Playwright completa con API/DB/E2E, snapshots visuales 360/768/1280 y reporte HTML.
+- **T14 completada**: README, guía de despliegue, Compose/Caddy de producción, variables y limitaciones.
 - **V01 completada**: rediseño editorial oscuro con acento cálido, tokens, estados, diálogos accesibles, capturas 360/768/1280 y revisión de estilo PASS en los 5 gates.
-- **No existe todavía**: suite visual con snapshots y T12-T13 (moderación, hardening y suite final).
+- **No existe todavía**: CI/CD, medición de métricas DORA y panel de moderación.
 - **Entorno decidido**: PostgreSQL y app en Docker; el PostgreSQL local del 5432 no se usa. La base de Docker se publica en 5433, la app en 8080 y la app de test en 8081.
-- `docs/` es referencia histórica:
+- `docs/` mezcla referencia histórica y guía operativa:
   - `docs/init.sql` y `docs/codigo_base_de_datos_postgres.sql` están obsoletos; **no los uses**.
   - `docs/server.js` es un borrador, no la implementación de producción.
   - `docs/docker-compose.yml` usa una imagen (`cybertecpostgresql/postgresql:16-3`) que no está disponible públicamente.
-- La siguiente tarea es **T12: moderación, rate limit y hardening**.
+  - `docs/despliegue.md` es la guía operativa actual.
+- El MVP está completo; la siguiente línea es el plan de métricas DORA.
 - El paquete SDD inicial vive en `specs/001-muro-24h/`.
 
 ### Roadmap de referencia
@@ -67,9 +71,9 @@ Reglas de lectura:
 | 4 | Frontend: shell, muro, héroe, countdown y estados (T09-T11 completadas; V01 de estilo completada) |
 | 5 | Detalle, comentarios, reportes y pantallas de auth (cubiertas por T10) |
 | 6 | Polling, revalidación y pulido de errores (T11 completada) |
-| 7 | Moderación, rate limit y endurecimiento (T12 pendiente) |
-| 8 | Suite Playwright: API, DB, E2E y visual (visual con snapshots pendiente) |
-| 9 | Documentación final, diagramas y despliegue (T14 pendiente) |
+| 7 | Moderación, rate limit y endurecimiento (T12 completada) |
+| 8 | Suite Playwright: API, DB, E2E y visual (T13 completada) |
+| 9 | Documentación final, diagramas y despliegue (T14 completada) |
 
 ## 3. Stack, arquitectura y carpetas
 

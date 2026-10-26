@@ -1,9 +1,19 @@
-# Local (sin dominio):
+# Desarrollo local (sin dominio): http://localhost
 :80 {
+    encode zstd gzip
     reverse_proxy app:3000
 }
 
-# Producción (sustituir lo de arriba):
+# Producción: comenta el bloque :80 y usa un dominio real.
+# Caddy gestiona TLS automáticamente con Let's Encrypt.
+#
 # wall24h.tudominio.com {
+#     encode zstd gzip
 #     reverse_proxy app:3000
 # }
+#
+# En producción configura en .env:
+#   NODE_ENV=production
+#   TRUST_PROXY=true
+#   APP_ORIGIN=https://wall24h.tudominio.com
+#   COOKIE_SECRET=<secreto de 32+ caracteres>

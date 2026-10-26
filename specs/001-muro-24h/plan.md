@@ -264,9 +264,10 @@ App
 | 5 | Detalle, comentarios, auth y reportes | Completada (T10) |
 | 6 | Polling, errores y pulido | Completada (T11) |
 | V01 | Rediseño visual aprobado | Completada y revisada (PASS) |
-| 7 | Moderación, rate limit y hardening | Pendiente (T12) |
-| 8 | Suite Playwright: API, DB, E2E y visual | Parcial (visual con snapshots en T13) |
-| 9 | Documentación, diagramas y despliegue | Pendiente (T14) |
+| 7 | Moderación, rate limit y hardening | Completada (T12) |
+| 8 | Suite Playwright: API, DB, E2E y visual | Completada (T13) |
+| 9 | Documentación, diagramas y despliegue | Completada (T14) |
+| DORA | CI/CD y métricas DORA | Pendiente (plan separado) |
 
 Los comandos `npm` ya existen y están descritos en `AGENTS.md` sección 8.
 

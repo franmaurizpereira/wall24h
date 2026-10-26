@@ -280,7 +280,7 @@
 
 ## T14 — Documentación y despliegue
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T13
 - **RF**: —
@@ -294,6 +294,7 @@
   - Diagramas actualizados.
   - Notas de despliegue y limitaciones.
 - **Tests**: seguir el README desde cero; `npm run test:all` y scripts SQL.
+- **Evidencia**: `evidence/T14-docs-deploy.md`.
 
 ## V01 — Rediseño visual
 
