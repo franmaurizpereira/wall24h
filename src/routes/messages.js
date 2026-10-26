@@ -3,6 +3,7 @@ import { query, queryWithRetry } from '../db.js';
 import { requireUser } from '../lib/auth.js';
 import { httpError, mapDbError } from '../lib/errors.js';
 import { moderate } from '../lib/moderation.js';
+import { writeRateLimit } from '../lib/security.js';
 
 const toIso = (value) =>
   value instanceof Date ? value.toISOString() : new Date(value).toISOString();
@@ -16,55 +17,63 @@ const createCommentSchema = z.object({
 });
 
 export default async function messageRoutes(app) {
-  app.post('/messages', { preHandler: requireUser }, async (request, reply) => {
-    const { text } = createMessageSchema.parse(request.body);
-    await moderate(text);
+  app.post(
+    '/messages',
+    { preHandler: requireUser, config: writeRateLimit(10) },
+    async (request, reply) => {
+      const { text } = createMessageSchema.parse(request.body);
+      await moderate(text);
 
-    try {
-      const { rows } = await queryWithRetry(
-        `INSERT INTO messages (user_id, content)
-         VALUES ($1, $2)
-         RETURNING id, created_at, expires_at`,
-        [request.user.id, text],
-      );
+      try {
+        const { rows } = await queryWithRetry(
+          `INSERT INTO messages (user_id, content)
+           VALUES ($1, $2)
+           RETURNING id, created_at, expires_at`,
+          [request.user.id, text],
+        );
 
-      const message = rows[0];
-      return reply.code(201).send({
-        id: Number(message.id),
-        created_at: toIso(message.created_at),
-        expires_at: toIso(message.expires_at),
-      });
-    } catch (error) {
-      throw mapDbError(error);
-    }
-  });
+        const message = rows[0];
+        return reply.code(201).send({
+          id: Number(message.id),
+          created_at: toIso(message.created_at),
+          expires_at: toIso(message.expires_at),
+        });
+      } catch (error) {
+        throw mapDbError(error);
+      }
+    },
+  );
 
-  app.post('/messages/:id/comments', { preHandler: requireUser }, async (request, reply) => {
-    const id = Number(request.params.id);
-    if (!Number.isInteger(id) || id <= 0) {
-      throw httpError(410, 'message_gone', 'Este mensaje ya expiró');
-    }
+  app.post(
+    '/messages/:id/comments',
+    { preHandler: requireUser, config: writeRateLimit(20) },
+    async (request, reply) => {
+      const id = Number(request.params.id);
+      if (!Number.isInteger(id) || id <= 0) {
+        throw httpError(410, 'message_gone', 'Este mensaje ya expiró');
+      }
 
-    const { text } = createCommentSchema.parse(request.body);
-    await moderate(text);
+      const { text } = createCommentSchema.parse(request.body);
+      await moderate(text);
 
-    try {
-      const { rows } = await queryWithRetry(
-        `INSERT INTO comments (message_id, user_id, content)
-         VALUES ($1, $2, $3)
-         RETURNING id, created_at`,
-        [id, request.user.id, text],
-      );
+      try {
+        const { rows } = await queryWithRetry(
+          `INSERT INTO comments (message_id, user_id, content)
+           VALUES ($1, $2, $3)
+           RETURNING id, created_at`,
+          [id, request.user.id, text],
+        );
 
-      const comment = rows[0];
-      return reply.code(201).send({
-        id: Number(comment.id),
-        created_at: toIso(comment.created_at),
-      });
-    } catch (error) {
-      throw mapDbError(error);
-    }
-  });
+        const comment = rows[0];
+        return reply.code(201).send({
+          id: Number(comment.id),
+          created_at: toIso(comment.created_at),
+        });
+      } catch (error) {
+        throw mapDbError(error);
+      }
+    },
+  );
 
   app.get('/messages/:id', async (request) => {
     const id = Number(request.params.id);

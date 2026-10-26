@@ -241,7 +241,7 @@
 
 ## T12 — Moderación, rate limit y hardening
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T03, T05, T06, T07
 - **RF**: RF-02, RF-06, RF-09
@@ -254,6 +254,7 @@
   - Logs sin contenido ni secretos.
   - Errores 500 sin filtraciones.
 - **Tests**: Playwright API: rate limit, moderación, CSRF/Origin y logs.
+- **Evidencia**: `evidence/T12-hardening.md`.
 
 ## T13 — Suite Playwright completa
 
