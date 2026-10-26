@@ -42,6 +42,22 @@ flowchart LR
 - **Testing**: Playwright para API, DB, E2E y visual; Vitest para funciones
   puras; SQL puro para esquema y `pg_cron`.
 
+## Capturas
+
+### Muro
+
+| Escritorio (1280) | Tablet (768) | Móvil (360) |
+|---|---|---|
+| ![Muro en escritorio](specs/001-muro-24h/evidence/screenshots/simulation/wall-1280.png) | ![Muro en tablet](specs/001-muro-24h/evidence/screenshots/simulation/wall-768.png) | ![Muro en móvil](specs/001-muro-24h/evidence/screenshots/simulation/wall-360.png) |
+
+### Detalle, autenticación y moderación
+
+| Detalle con comentarios | Login / registro |
+|---|---|
+| ![Detalle de mensaje](specs/001-muro-24h/evidence/screenshots/simulation/detail-1280.png) | ![Diálogo de autenticación](specs/001-muro-24h/evidence/screenshots/simulation/auth-dialog-1280.png) |
+
+![Panel de moderación](specs/001-muro-24h/evidence/screenshots/simulation/admin-1280.png)
+
 ## Arranque rápido
 
 Requisitos: Docker con Compose v2, Git y Node.js 22 (solo para tests/scripts
