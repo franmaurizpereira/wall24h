@@ -258,7 +258,7 @@
 
 ## T13 — Suite Playwright completa
 
-- **Estado**: pending
+- **Estado**: done
 - **Owner**: implementer
 - **Depende de**: T11, T12
 - **RF**: todos
@@ -276,6 +276,7 @@
 - **Tests**: `docker compose --profile test up -d`, `npm run test:up`,
   `npm run test:all`, `npm run test:down`,
   `./scripts/validate-schema.sh`, `./scripts/validate-cron.sh`.
+- **Evidencia**: `evidence/T13-playwright-suite.md`.
 
 ## T14 — Documentación y despliegue
 
